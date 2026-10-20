@@ -167,7 +167,7 @@ def create_app() -> gr.Blocks:
             )
         with gr.Tab("About"):
             gr.Markdown(
-                "## From question to evidence\nLangChain orchestrates dense Qwen retrieval and BM25 keyword retrieval, Reciprocal Rank Fusion, Qwen reranking, and a local Unsloth quantized Qwen answer model.\n\nThe library covers vendor invoices and matching in Dynamics 365 Finance. It does not connect to a live ERP installation. Citation checks validate source identifiers; they do not prove that every generated claim is supported.\n\nCode modules separate ingestion, embedding, retrieval, reranking, generation, configuration, and interface. Formal quality evaluations are planned after the application is stable."
+                "## From question to evidence\nLangChain orchestrates dense Qwen retrieval and BM25 keyword retrieval, Reciprocal Rank Fusion, Qwen reranking, and a local Unsloth quantized Qwen answer model.\n\nThe library covers vendor invoices and matching in Dynamics 365 Finance. It does not connect to a live ERP installation. Citation checks validate source identifiers; they do not prove that every generated claim is supported.\n\nCode modules separate ingestion, embedding, retrieval, reranking, generation, configuration, and interface. See the repository validation report for tested examples and remaining limitations."
             )
     return app
 

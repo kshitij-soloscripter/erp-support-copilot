@@ -10,6 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 ROOT = Path(__file__).resolve().parents[3]
 os.environ.setdefault("HF_HOME", str(ROOT / ".cache/huggingface"))
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+os.environ.setdefault("GRADIO_ANALYTICS_ENABLED", "False")
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 
 

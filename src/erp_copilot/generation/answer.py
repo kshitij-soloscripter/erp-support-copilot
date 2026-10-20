@@ -79,7 +79,9 @@ def build_evidence_units(docs: list[Document]) -> list[dict]:
     return units
 
 
-def extract_answer(payload: dict, docs: list[Document], units: list[dict] | None = None) -> str:
+def extract_answer(
+    payload: dict, docs: list[Document], units: list[dict] | None = None, question: str = ""
+) -> str:
     """Accept valid unit IDs only, then copy their original source spans."""
     if (
         set(payload) != {"units"}
@@ -108,6 +110,20 @@ def extract_answer(payload: dict, docs: list[Document], units: list[dict] | None
     if ranked:
         anchor = max(ranked, key=lambda u: u["relevance_score"])["id"]
         selected = [anchor, *[i for i in sorted(selected) if i != anchor]][:2]
+        if re.match(r"^\s*(?:can|may|does|do|is|are|will|should)\b", question, re.I):
+            restrictions = [
+                u
+                for u in ranked
+                if u["relevance_score"] >= get_settings().min_excerpt_score
+                and re.search(
+                    r"\b(?:only|cannot|can't|don't|doesn't|not|must|except|at most)\b",
+                    u["text"],
+                    re.I,
+                )
+            ]
+            if restrictions:
+                restriction = max(restrictions, key=lambda u: u["relevance_score"])["id"]
+                selected = list(dict.fromkeys([anchor, restriction, *selected]))[:2]
     bullets, seen = [], set()
     for identifier in selected:
         if type(identifier) is not int or identifier not in available:
@@ -198,7 +214,7 @@ def generate_answer(
         return "The model could not produce a verified excerpt. Please ask a narrower question."
     if not isinstance(selection, dict):
         return "The model could not produce a verified excerpt. Please ask a narrower question."
-    return validate_answer(extract_answer(selection, docs, units), len(docs))
+    return validate_answer(extract_answer(selection, docs, units, question), len(docs))
 
 
 def validate_answer(answer: str, source_count: int, finish_reason: str | None = None) -> str:

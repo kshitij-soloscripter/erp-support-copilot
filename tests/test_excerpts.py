@@ -101,6 +101,18 @@ class ExcerptTests(unittest.TestCase):
             extract_answer({"units": []}, self.docs, units).startswith("Closest source excerpt:")
         )
 
+    def test_yes_no_answer_preserves_explicit_limit(self):
+        docs = [
+            Document(
+                page_content="You can set one attachment as the default.\nYou can set only one attachment as the default."
+            )
+        ]
+        units = build_evidence_units(docs)
+        units[0]["relevance_score"] = 0.9999
+        units[1]["relevance_score"] = 0.999
+        answer = extract_answer({"units": [1]}, docs, units, "Can I set two default attachments?")
+        self.assertIn("only one", answer)
+
     def test_headings_are_not_answer_units(self):
         self.assertFalse(
             any("Attachment limits" in u["text"] for u in build_evidence_units(self.docs))

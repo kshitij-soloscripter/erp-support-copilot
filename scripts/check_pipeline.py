@@ -117,6 +117,8 @@ def main():
                 "mechanical_pass": False,
                 "manual_review": "pending",
             }
+        result["git_revision"] = report["git_revision"]
+        result["application_sha256"] = code_hash
         report["results"].append(result)
         args.output.write_text(json.dumps(report, indent=2))
         print(

@@ -13,12 +13,14 @@ class QwenEmbeddings(Embeddings):
     @property
     def model(self):
         if self._model is None:
+            import torch
             from sentence_transformers import SentenceTransformer
 
             self._model = SentenceTransformer(
                 self.settings.embedding_model,
                 device=self.settings.torch_device(),
                 truncate_dim=self.settings.embedding_dimensions,
+                model_kwargs={"torch_dtype": torch.float16},
             )
             self._model.max_seq_length = 512
         return self._model

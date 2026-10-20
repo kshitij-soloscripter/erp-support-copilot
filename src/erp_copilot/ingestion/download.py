@@ -70,6 +70,15 @@ def download_corpus(progress=None) -> dict:
                     "sha256": hashlib.sha256(text.encode()).hexdigest(),
                     "product": source["product"],
                     "module": source["module"],
+                    "topic": (
+                        "Matching"
+                        if "matching" in entry["name"].lower()
+                        else "Payments"
+                        if "payment" in entry["name"].lower()
+                        else "Automation"
+                        if "automation" in entry["name"].lower()
+                        else "Vendor invoices"
+                    ),
                 }
             )
             if progress:

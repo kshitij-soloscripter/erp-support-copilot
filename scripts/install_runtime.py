@@ -24,7 +24,14 @@ def main():
         response = client.get("https://api.github.com/repos/ggml-org/llama.cpp/releases?per_page=5")
         response.raise_for_status()
         releases = response.json()
-        release = next((r for r in releases if any("macos-arm64" in a["name"] or "osx-arm64" in a["name"] for a in r["assets"])), None)
+        release = next(
+            (
+                r
+                for r in releases
+                if any("macos-arm64" in a["name"] or "osx-arm64" in a["name"] for a in r["assets"])
+            ),
+            None,
+        )
         if release is None:
             raise SystemExit("No recent Apple Silicon runtime release found.")
         assets = [

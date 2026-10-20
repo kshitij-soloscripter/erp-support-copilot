@@ -23,7 +23,7 @@ def load_chunks() -> list[Document]:
     )
     chunks = []
     for entry in manifest["documents"]:
-        text = (settings.data_dir / "raw" / entry["file"]).read_text()
+        text = (settings.data_dir / "raw" / entry["file"]).read_bytes().decode("utf-8")
         if hashlib.sha256(text.encode()).hexdigest() != entry["sha256"]:
             raise ValueError(f"Source hash mismatch: {entry['file']}; download the corpus again.")
         frontmatter = {}

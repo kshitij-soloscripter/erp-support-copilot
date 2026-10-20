@@ -23,7 +23,7 @@ class QwenReranker:
         self.model = (
             AutoModelForCausalLM.from_pretrained(
                 self.settings.reranker_model,
-                torch_dtype=torch.float16 if device != "cpu" else torch.float32,
+                torch_dtype=torch.float16,
             )
             .to(device)
             .eval()

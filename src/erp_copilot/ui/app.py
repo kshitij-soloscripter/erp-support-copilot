@@ -24,13 +24,13 @@ def create_app() -> gr.Blocks:
         count = len(json.loads(path.read_text())["documents"]) if path.exists() else 0
         return f"**{count} public documents** · **{settings.embedding_dimensions}D embeddings** · Qwen3 1.7B Q4_K_M"
 
-    def ask(message, history, mode, rerank):
+    def ask(message, history, mode, rerank, topic):
         history = list(history or [])
         if not message.strip():
             return history, "", "", [], ""
         history.append({"role": "user", "content": message})
         try:
-            result = service.ask(message, mode, rerank)
+            result = service.ask(message, mode, rerank, topic)
             history.append({"role": "assistant", "content": result["answer"]})
             sources = []
             for i, doc in enumerate(result["context"], 1):
@@ -127,6 +127,11 @@ def create_app() -> gr.Blocks:
                         ["Hybrid", "Dense", "Keyword"], value="Hybrid", label="Retrieval"
                     )
                     rerank = gr.Checkbox(value=True, label="Rerank evidence with Qwen")
+                    topic = gr.Dropdown(
+                        ["All topics", "Matching", "Payments", "Automation", "Vendor invoices"],
+                        value="All topics",
+                        label="Topic filter",
+                    )
                 timing = gr.Markdown()
                 ranking = gr.Dataframe(
                     headers=["Document", "Fusion score", "Rerank score"], interactive=False
@@ -134,7 +139,7 @@ def create_app() -> gr.Blocks:
             gr.Markdown(
                 "Answers use the indexed library. Check source excerpts before changing an ERP configuration. Each question searches independently."
             )
-            inputs = [question, chat, mode, rerank]
+            inputs = [question, chat, mode, rerank, topic]
             outputs = [chat, evidence, timing, ranking, question]
             send.click(ask, inputs, outputs, concurrency_id="local-models", concurrency_limit=1)
             question.submit(

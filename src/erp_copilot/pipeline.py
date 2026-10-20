@@ -22,7 +22,7 @@ class Copilot:
 
     def retrieve(self, state):
         started = perf_counter()
-        state["documents"] = self.store.search(state["question"], state["mode"])
+        state["documents"] = self.store.search(state["question"], state["mode"], state["topic"])
         state["retrieval_seconds"] = perf_counter() - started
         return state
 
@@ -44,9 +44,11 @@ class Copilot:
         state["generation_seconds"] = perf_counter() - started
         return state
 
-    def ask(self, question, mode="Hybrid", rerank=True):
+    def ask(self, question, mode="Hybrid", rerank=True, topic="All topics"):
         question = question.strip()
         if not question or len(question) > 1500:
             raise ValueError("Enter a question between 1 and 1,500 characters.")
         with self.lock:
-            return self.chain.invoke({"question": question, "mode": mode, "rerank": rerank})
+            return self.chain.invoke(
+                {"question": question, "mode": mode, "rerank": rerank, "topic": topic}
+            )

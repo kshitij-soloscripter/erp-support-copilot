@@ -101,7 +101,7 @@ class SearchStore:
         self.load()
         return len(documents)
 
-    def search(self, query: str, mode: str = "Hybrid") -> list[Document]:
+    def search(self, query: str, mode: str = "Hybrid", topic: str = "All topics") -> list[Document]:
         if not self.documents:
             self.load()
         rankings = []
@@ -109,6 +109,15 @@ class SearchStore:
             hits = self.client.query_points(
                 self.settings.collection_name,
                 query=self.embeddings.embed_query(query),
+                query_filter=None
+                if topic == "All topics"
+                else models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="metadata.topic", match=models.MatchValue(value=topic)
+                        )
+                    ]
+                ),
                 limit=self.settings.retrieval_k,
             ).points
             rankings.append(
@@ -119,7 +128,15 @@ class SearchStore:
             )
         if mode in ("Hybrid", "Keyword"):
             scores = self.bm25.get_scores(tokenize(query))
-            indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+            indices = sorted(
+                (
+                    i
+                    for i, d in enumerate(self.documents)
+                    if topic == "All topics" or d.metadata.get("topic") == topic
+                ),
+                key=lambda i: scores[i],
+                reverse=True,
+            )
             rankings.append(
                 [self.documents[i] for i in indices[: self.settings.retrieval_k] if scores[i] > 0]
             )

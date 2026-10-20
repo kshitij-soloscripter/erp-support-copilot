@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     qdrant_api_key: str | None = None
 
     @property
+    def model_cache_dir(self) -> Path:
+        return ROOT / ".cache/huggingface/hub"
+
+    @property
     def data_dir(self) -> Path:
         return ROOT / "data"
 

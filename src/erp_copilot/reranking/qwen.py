@@ -18,11 +18,14 @@ class QwenReranker:
 
         device = self.settings.torch_device()
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.settings.reranker_model, padding_side="left"
+            self.settings.reranker_model,
+            cache_dir=str(self.settings.model_cache_dir),
+            padding_side="left",
         )
         self.model = (
             AutoModelForCausalLM.from_pretrained(
                 self.settings.reranker_model,
+                cache_dir=str(self.settings.model_cache_dir),
                 torch_dtype=torch.float16,
             )
             .to(device)

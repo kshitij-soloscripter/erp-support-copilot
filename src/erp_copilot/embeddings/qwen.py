@@ -18,6 +18,7 @@ class QwenEmbeddings(Embeddings):
 
             self._model = SentenceTransformer(
                 self.settings.embedding_model,
+                cache_folder=str(self.settings.model_cache_dir),
                 device=self.settings.torch_device(),
                 truncate_dim=self.settings.embedding_dimensions,
                 model_kwargs={"torch_dtype": torch.float16},

@@ -1,0 +1,16 @@
+.venv/
+.env
+.cache/
+.tools/
+models/
+data/raw/
+data/processed/
+data/qdrant/
+data/source-manifest.json
+data/licenses/
+logs/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ruff_cache/
+.DS_Store

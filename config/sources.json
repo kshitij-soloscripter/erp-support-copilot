@@ -1,0 +1,8 @@
+{
+  "repository": "MicrosoftDocs/dynamics-365-unified-operations-public",
+  "directory": "articles/finance/accounts-payable",
+  "topics": ["vendor-invoice", "invoice-matching", "vendor-payment", "invoice-automation", "three-way", "two-way"],
+  "license": "CC-BY-4.0",
+  "product": "Dynamics 365 Finance",
+  "module": "Accounts payable"
+}

@@ -13,18 +13,18 @@ A local Gradio assistant for Dynamics 365 Finance vendor-invoice questions. It r
 
 ## Run on Apple Silicon
 
-Python 3.11–3.13, internet access for initial downloads, and several GB of free storage are required. 16 GB RAM is recommended; performance depends on hardware and corpus size. Models are downloaded from Hugging Face without training or an API key. Qwen embeddings and reranking use PyTorch MPS when available; generation uses llama.cpp Metal.
+Python 3.11–3.13, internet access for initial downloads, and several GB of free storage are required. 16 GB RAM is recommended; performance depends on hardware and corpus size. Models are downloaded from Hugging Face without training or an API key. Qwen embeddings and reranking use half-precision weights and PyTorch MPS when available; generation uses llama.cpp Metal, with CPU fallback.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
-python scripts/install_runtime.py
+python scripts/install_runtime.py  # pinned llama.cpp b11750
 cp .env.example .env
 python app.py
 ```
 
-Open http://127.0.0.1:7860. In **Library**, download public documents, build the index, download the answer model, and start it. Then use **Ask**. The first index build also downloads the embedding model; first reranking downloads the reranker. Subsequent runs reuse caches. Run only one app process when using local Qdrant.
+Open http://127.0.0.1:7860. In **Library**, download public documents, build the index, download the answer model, and start it. Then use **Ask**. The first index build also downloads the embedding model; first reranking downloads the reranker. Subsequent runs reuse caches. After setup, double-click `Run.command` to start the app. Run only one app process when using local Qdrant.
 
 For a reproducible dependency installation, install `requirements-lock.txt` before `pip install -e . --no-deps`. The lock records the development machine's environment; platform-specific wheels can differ.
 
@@ -48,7 +48,7 @@ Question → dense + keyword retrieval → RRF → Qwen reranker
          → top evidence → quantized Qwen → cited answer + excerpts
 ```
 
-Generation receives the selected source chunks. RRF is rank fusion, separate from model-based reranking. The Search details panel exposes both scores and stage timings. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
+Generation receives the selected source chunks. RRF is rank fusion, separate from model-based reranking. The Search details panel exposes both scores, stage timings, and topic filters applied to both retrieval paths. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
 
 ## Project layout
 

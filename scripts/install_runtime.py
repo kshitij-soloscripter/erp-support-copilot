@@ -21,19 +21,11 @@ def main():
     destination = ROOT / ".tools"
     destination.mkdir(exist_ok=True)
     with httpx.Client(follow_redirects=True, timeout=180) as client:
-        response = client.get("https://api.github.com/repos/ggml-org/llama.cpp/releases?per_page=5")
-        response.raise_for_status()
-        releases = response.json()
-        release = next(
-            (
-                r
-                for r in releases
-                if any("macos-arm64" in a["name"] or "osx-arm64" in a["name"] for a in r["assets"])
-            ),
-            None,
+        response = client.get(
+            "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b11750"
         )
-        if release is None:
-            raise SystemExit("No recent Apple Silicon runtime release found.")
+        response.raise_for_status()
+        release = response.json()
         assets = [
             a
             for a in release["assets"]

@@ -1,10 +1,10 @@
-"""A citation alone must not allow an invented financial statement."""
+"""The model can select source IDs, but cannot invent answer wording."""
 
 import unittest
 
 from langchain_core.documents import Document
 
-from erp_copilot.generation.answer import extract_answer, normalize_excerpt
+from erp_copilot.generation.answer import build_evidence_units, extract_answer, normalize_excerpt
 from erp_copilot.generation.policy import ABSTENTION
 
 
@@ -12,31 +12,18 @@ class ExcerptTests(unittest.TestCase):
     def setUp(self):
         self.docs = [
             Document(
-                page_content="Only **one** attachment can be the default. The system recalculates the due date using the invoice date."
+                page_content="# Attachment limits\nOnly **one** attachment can be the default.\nThe system recalculates the due date using the invoice date."
             )
         ]
 
     def test_real_excerpt_is_accepted(self):
-        self.assertIn(
-            "one attachment",
-            extract_answer(
-                {
-                    "answerable": True,
-                    "quotes": [{"source": 1, "text": "Only one attachment can be the default."}],
-                },
-                self.docs,
-            ),
-        )
+        self.assertIn("**one** attachment", extract_answer({"units": [1]}, self.docs))
 
     def test_invented_fact_with_real_citation_is_rejected(self):
         self.assertIn(
             "verified excerpt",
             extract_answer(
-                {
-                    "answerable": True,
-                    "quotes": [{"source": 1, "text": "Two attachments can be the default."}],
-                },
-                self.docs,
+                {"units": [1], "text": "Two attachments can be the default."}, self.docs
             ),
         )
 
@@ -44,33 +31,23 @@ class ExcerptTests(unittest.TestCase):
         self.assertIn(
             "verified excerpt",
             extract_answer(
-                {
-                    "answerable": True,
-                    "quotes": [
-                        {"source": 1, "text": "The system does not recalculate the due date."}
-                    ],
-                },
-                self.docs,
+                {"units": [2], "text": "The system does not recalculate the due date."}, self.docs
             ),
         )
 
     def test_wrong_source_is_rejected(self):
-        self.assertIn(
-            "invalid source",
-            extract_answer(
-                {
-                    "answerable": True,
-                    "quotes": [{"source": 2, "text": "Only one attachment can be the default."}],
-                },
-                self.docs,
-            ),
-        )
+        self.assertIn("invalid source", extract_answer({"units": [99]}, self.docs))
 
     def test_abstention_is_allowed(self):
-        self.assertEqual(extract_answer({"answerable": False, "quotes": []}, self.docs), ABSTENTION)
+        self.assertEqual(extract_answer({"units": []}, self.docs), ABSTENTION)
 
     def test_numbers_are_not_normalized_away(self):
         self.assertNotEqual(normalize_excerpt("Use -2 days."), normalize_excerpt("Use 2 days."))
+
+    def test_headings_are_not_answer_units(self):
+        self.assertFalse(
+            any("Attachment limits" in u["text"] for u in build_evidence_units(self.docs))
+        )
 
 
 if __name__ == "__main__":

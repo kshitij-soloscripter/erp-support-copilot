@@ -6,7 +6,7 @@ from time import perf_counter
 from langchain_core.runnables import RunnableLambda
 
 from erp_copilot.config.settings import get_settings
-from erp_copilot.generation.answer import generate_answer
+from erp_copilot.generation.answer import build_evidence_units, generate_answer
 from erp_copilot.generation.policy import question_limitation
 from erp_copilot.reranking.qwen import QwenReranker
 from erp_copilot.retrieval.store import SearchStore
@@ -36,12 +36,18 @@ class Copilot:
         )
         state["ranked"] = docs
         state["context"] = self.store.expand_context(docs, get_settings().context_chunks)
+        units = build_evidence_units(state["context"])
+        state["answer_units"] = (
+            self.reranker.select_units(state["question"], units) if state["rerank"] else units
+        )
         state["rerank_seconds"] = perf_counter() - started
         return state
 
     def answer(self, state):
         started = perf_counter()
-        state["answer"] = generate_answer(state["question"], state["context"])
+        state["answer"] = generate_answer(
+            state["question"], state["context"], state["answer_units"]
+        )
         state["generation_seconds"] = perf_counter() - started
         return state
 

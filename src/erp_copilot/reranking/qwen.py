@@ -68,3 +68,18 @@ class QwenReranker:
                     )
                 )
         return sorted(scored, key=lambda d: d.metadata["rerank_score"], reverse=True)
+
+    def select_units(self, query: str, units: list[dict], limit: int = 6) -> list[dict]:
+        """Compress parent sections to a small set of question-relevant evidence units."""
+        from rank_bm25 import BM25Okapi
+
+        from erp_copilot.retrieval.store import tokenize
+
+        if not units:
+            return []
+        texts = [f"{u.get('heading', '')}\n{u['text']}" for u in units]
+        scores = BM25Okapi([tokenize(t) for t in texts]).get_scores(tokenize(query))
+        indices = sorted(range(len(units)), key=lambda i: scores[i], reverse=True)[:12]
+        candidates = [Document(page_content=texts[i], metadata={"unit": units[i]}) for i in indices]
+        ranked = self.rerank(query, candidates)
+        return [{**d.metadata["unit"], "id": i + 1} for i, d in enumerate(ranked[:limit])]

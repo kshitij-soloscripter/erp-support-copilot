@@ -44,6 +44,18 @@ class ExcerptTests(unittest.TestCase):
     def test_numbers_are_not_normalized_away(self):
         self.assertNotEqual(normalize_excerpt("Use -2 days."), normalize_excerpt("Use 2 days."))
 
+    def test_lists_stay_together(self):
+        docs = [
+            Document(
+                page_content="### Components\n+ Header data entities\n+ Invoice exception processing\n+ Side-by-side attachment viewer",
+                metadata={"subsection": "Components"},
+            )
+        ]
+        units = build_evidence_units(docs)
+        self.assertEqual(len(units), 1)
+        self.assertIn("exception processing", units[0]["text"])
+        self.assertEqual(units[0]["heading"], "Components")
+
     def test_headings_are_not_answer_units(self):
         self.assertFalse(
             any("Attachment limits" in u["text"] for u in build_evidence_units(self.docs))

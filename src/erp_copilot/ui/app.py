@@ -24,7 +24,8 @@ def create_app() -> gr.Blocks:
         count = len(json.loads(path.read_text())["documents"]) if path.exists() else 0
         return f"**{count} public documents** · **{settings.embedding_dimensions}D embeddings** · Qwen3 1.7B Q4_K_M"
 
-    def ask(message, history, mode, rerank, topic):
+    def ask(message, history, mode, rerank, topic, progress=gr.Progress()):  # noqa: B008
+        progress(0, desc="Finding and checking evidence…")
         history = list(history or [])
         if not message.strip():
             return history, "", "", [], ""

@@ -59,6 +59,8 @@ class SearchStore:
         self.bm25 = BM25Okapi([tokenize(d.page_content) for d in self.documents])
 
     def build(self, progress=None) -> int:
+        if progress:
+            progress(0, desc="Loading documentation and Qwen embedding model…")
         documents = load_chunks()
         if not documents:
             raise RuntimeError("No usable chunks. Download documentation first.")

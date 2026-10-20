@@ -56,7 +56,7 @@ class QwenReranker:
                     [self.prefix_ids + ids + self.suffix_ids], device=self.model.device
                 )
                 logits = (
-                    self.model(input_ids=tokens, use_cache=False)
+                    self.model(input_ids=tokens, use_cache=False, logits_to_keep=1)
                     .logits[0, -1, [self.no_id, self.yes_id]]
                     .float()
                 )

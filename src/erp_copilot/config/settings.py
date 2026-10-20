@@ -24,11 +24,11 @@ class Settings(BaseSettings):
     llm_base_url: str = "http://127.0.0.1:8081"
     llm_port: int = 8081
     llm_context_size: int = 4096
-    llm_max_tokens: int = 640
+    llm_max_tokens: int = 384
     app_port: int = 7860
     device: str = "auto"
     retrieval_k: int = Field(default=16, ge=1)
-    rerank_candidates: int = Field(default=12, ge=1)
+    rerank_candidates: int = Field(default=8, ge=1)
     context_chunks: int = Field(default=4, ge=1)
     document_limit: int = Field(default=45, ge=1)
     qdrant_url: str | None = None

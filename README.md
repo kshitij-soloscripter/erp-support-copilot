@@ -48,7 +48,7 @@ Question → dense + keyword retrieval → RRF → Qwen reranker
          → top evidence → quantized Qwen → cited answer + excerpts
 ```
 
-Generation receives the selected source chunks. RRF is rank fusion, separate from model-based reranking. The Search details panel exposes both scores, stage timings, and topic filters applied to both retrieval paths. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
+Generation receives the selected source chunks. RRF is rank fusion, separate from model-based reranking. By default, eight candidates are reranked to keep CPU inference practical. Answers are constrained to concise evidence-based bullets. The Search details panel exposes both scores, stage timings, and topic filters applied to both retrieval paths. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
 
 ## Project layout
 
@@ -78,7 +78,7 @@ Corpus downloads, models, runtime binaries, credentials, and generated indexes a
 
 Copy `.env.example` to `.env`. Use `EMBEDDING_DIMENSIONS=256` or `512`. Rebuild the index after changing dimensions, embedding model, or corpus. Collections and local chunk files are separated by dimension. The app validates the embedding model and point count when loading an index. `DEVICE=cpu` overrides accelerator selection.
 
-The default context window is 4096 tokens, with four evidence chunks and up to 640 answer tokens. Reduce chunk count or increase the context window if experimenting with longer evidence. A reranker relevance score is a ranking signal, not a calibrated confidence probability.
+The default context window is 4096 tokens, with four evidence chunks and up to 384 answer tokens. Reduce chunk count or increase the context window if experimenting with longer evidence. A reranker relevance score is a ranking signal, not a calibrated confidence probability.
 
 ## Limitations and next steps
 

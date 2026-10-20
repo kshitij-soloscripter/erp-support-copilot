@@ -18,6 +18,19 @@ def tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+(?:[-_][a-z0-9]+)*", text.lower())
 
 
+def join_passages(texts: list[str]) -> str:
+    """Join neighboring chunks while removing an exact shared boundary."""
+    merged = ""
+    for text in texts:
+        overlap = 0
+        for size in range(min(200, len(merged), len(text)), 19, -1):
+            if merged.endswith(text[:size]):
+                overlap = size
+                break
+        merged += ("\n\n" if merged and not overlap else "") + text[overlap:]
+    return merged
+
+
 class SearchStore:
     def __init__(self):
         self.settings = get_settings()
@@ -102,6 +115,55 @@ class SearchStore:
         temporary.replace(self.chunks_path)
         self.load()
         return len(documents)
+
+    def expand_context(self, ranked: list[Document], limit: int) -> list[Document]:
+        """Return distinct, bounded parent sections instead of fragmented lists."""
+
+        def section_key(doc):
+            return (
+                doc.metadata["file"],
+                doc.metadata.get("section", ""),
+                doc.metadata.get("subsection", ""),
+            )
+
+        contexts, seen = [], set()
+        total_chars = 0
+        for selected in ranked:
+            key = section_key(selected)
+            if key in seen:
+                continue
+            seen.add(key)
+            siblings = [d for d in self.documents if section_key(d) == key]
+            pivot = next(
+                i
+                for i, d in enumerate(siblings)
+                if d.metadata["chunk_id"] == selected.metadata["chunk_id"]
+            )
+            chosen = [pivot]
+            for index in sorted(range(len(siblings)), key=lambda i: abs(i - pivot)):
+                if index in chosen:
+                    continue
+                proposed = sorted([*chosen, index])
+                if len(join_passages([siblings[i].page_content for i in proposed])) <= 2400:
+                    chosen = proposed
+            text = join_passages([siblings[i].page_content for i in sorted(chosen)])
+            if total_chars + len(text) > 6000:
+                continue
+            contexts.append(
+                Document(
+                    page_content=text,
+                    metadata={
+                        **selected.metadata,
+                        "expanded_chunk_ids": [
+                            siblings[i].metadata["chunk_id"] for i in sorted(chosen)
+                        ],
+                    },
+                )
+            )
+            total_chars += len(text)
+            if len(contexts) >= limit:
+                break
+        return contexts
 
     def search(self, query: str, mode: str = "Hybrid", topic: str = "All topics") -> list[Document]:
         if not self.documents:

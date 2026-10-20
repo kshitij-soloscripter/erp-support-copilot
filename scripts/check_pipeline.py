@@ -97,6 +97,8 @@ def main():
         "application_sha256": code_hash,
         "dataset_commit": corpus["commit"],
         "document_count": len(corpus["documents"]),
+        "source_content_license": "CC-BY-4.0",
+        "source_attribution": "Microsoft and the contributors to MicrosoftDocs/dynamics-365-unified-operations-public; evidence is excerpted and reformatted. Source URLs identify the original documents.",
         "run_at": datetime.now(UTC).isoformat(),
         "pipeline": {"mode": "Hybrid", "reranking": True},
         "results": [],

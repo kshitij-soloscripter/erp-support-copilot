@@ -3,12 +3,15 @@
 import re
 
 ABSTENTION = "Not covered by this library."
-OTHER_PRODUCTS = re.compile(r"\b(?:SAP|Oracle|NetSuite|Business\s+Central|Dynamics\s+NAV)\b", re.IGNORECASE)
+OTHER_PRODUCTS = re.compile(
+    r"\b(?:SAP|Oracle|NetSuite|Business\s+Central|Dynamics\s+NAV)\b", re.IGNORECASE
+)
 FINANCIAL_VALUES = re.compile(
     r"\b(?:balance|balances|amount|total|revenue|profit|outstanding|unpaid)\b", re.IGNORECASE
 )
 PRIVATE_OR_CURRENT = re.compile(
-    r"\b(?:our|my|company|today|yesterday|currently|current|last\s+(?:week|month|year))\b", re.IGNORECASE
+    r"\b(?:our|my|company|today|yesterday|currently|current|last\s+(?:week|month|year))\b",
+    re.IGNORECASE,
 )
 HOW_TO = re.compile(
     r"\b(?:how\s+(?:can|do|does|should|to|is)|where\s+(?:can|do|is)|which\s+(?:report|page|screen))\b",

@@ -35,7 +35,7 @@ class Copilot:
             else state["documents"]
         )
         state["ranked"] = docs
-        state["context"] = docs[: get_settings().context_chunks]
+        state["context"] = self.store.expand_context(docs, get_settings().context_chunks)
         state["rerank_seconds"] = perf_counter() - started
         return state
 

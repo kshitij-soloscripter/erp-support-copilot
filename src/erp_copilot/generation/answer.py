@@ -110,7 +110,7 @@ def extract_answer(
     if ranked:
         anchor = max(ranked, key=lambda u: u["relevance_score"])["id"]
         selected = [anchor, *[i for i in sorted(selected) if i != anchor]][:2]
-        if re.match(r"^\s*(?:can|may|does|do|is|are|will|should)\b", question, re.I):
+        if re.match(r"^\s*(?:can|may|does|do|is|are|will|should)\b", question, re.IGNORECASE):
             restrictions = [
                 u
                 for u in ranked
@@ -118,7 +118,7 @@ def extract_answer(
                 and re.search(
                     r"\b(?:only|cannot|can't|don't|doesn't|not|must|except|at most)\b",
                     u["text"],
-                    re.I,
+                    re.IGNORECASE,
                 )
             ]
             if restrictions:

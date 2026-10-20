@@ -1,6 +1,6 @@
 # ERP Support Copilot
 
-A local Gradio assistant for Dynamics 365 Finance vendor-invoice questions. It retrieves public Microsoft documentation, combines semantic and keyword search, reranks evidence, and generates answers with numbered source references.
+A local Gradio assistant for Dynamics 365 Finance vendor-invoice questions. It retrieves public Microsoft documentation, combines semantic and keyword search, reranks evidence, and selects source-verified answer excerpts with numbered source references.
 
 ## Stack
 
@@ -9,7 +9,8 @@ A local Gradio assistant for Dynamics 365 Finance vendor-invoice questions. It r
 - **Generation:** `unsloth/Qwen3-1.7B-GGUF`, `Qwen3-1.7B-Q4_K_M.gguf`, served by llama.cpp. Thinking disabled.
 - **Embeddings:** `Qwen/Qwen3-Embedding-0.6B`, normalized **512D** vectors; **256D** configurable.
 - **Retrieval:** persistent local Qdrant + BM25 over the same chunks, fused with RRF.
-- **Reranking:** `Qwen/Qwen3-Reranker-0.6B`, yes/no relevance scoring.
+- **Reranking:** `Qwen/Qwen3-Reranker-0.6B`, yes/no relevance scoring for chunks and compressed evidence units.
+- **Grounding:** the answer model selects valid evidence IDs; application code copies original text instead of displaying unverified paraphrases.
 
 ## Run on Apple Silicon
 
@@ -44,11 +45,12 @@ The CLI answer command starts the local model server if necessary. The Gradio pr
 ```text
 Public Markdown → heading-aware chunks → Qwen embeddings → Qdrant
                                   └──────────────────────→ BM25
-Question → dense + keyword retrieval → RRF → Qwen reranker
-         → top evidence → quantized Qwen → cited answer + excerpts
+Question → scope guard → dense + keyword retrieval → RRF → chunk reranking
+         → expand related sections → unit compression → quantized Qwen selects IDs
+         → verified original excerpts + citations
 ```
 
-Generation receives the selected source chunks. RRF is rank fusion, separate from model-based reranking. By default, eight candidates are reranked to keep CPU inference practical. Answers are constrained to concise evidence-based bullets. The Search details panel exposes both scores, stage timings, and topic filters applied to both retrieval paths. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
+Generation receives a compressed shortlist of evidence units from expanded source sections. Lists remain intact to avoid missing options or components. RRF is rank fusion, separate from model-based reranking. By default, eight chunks are reranked, related parent sections are expanded, and up to twelve evidence units receive a second relevance pass. The strongest parent section supplies the evidence units. Its best six units reach Qwen, which selects at most two under a constrained JSON schema; the strongest reranked unit anchors the answer. Empty selections may show a labeled closest-excerpt fallback when `MIN_EXCERPT_SCORE` is met. This score is not an accuracy probability. The Search details panel exposes both scores, stage timings, and topic filters applied to both retrieval paths. Retrieval modes and reranking can be changed for inspection; no benchmark claims are made.
 
 ## Project layout
 
@@ -78,16 +80,26 @@ Corpus downloads, models, runtime binaries, credentials, and generated indexes a
 
 Copy `.env.example` to `.env`. Use `EMBEDDING_DIMENSIONS=256` or `512`. Rebuild the index after changing dimensions, embedding model, or corpus. Collections and local chunk files are separated by dimension. The app validates the embedding model and point count when loading an index. `DEVICE=cpu` overrides accelerator selection.
 
-The default context window is 4096 tokens, with four evidence chunks and up to 384 answer tokens. Reduce chunk count or increase the context window if experimenting with longer evidence. A reranker relevance score is a ranking signal, not a calibrated confidence probability.
+The local server has a 4096-token context window. Up to four parent sections are available as evidence, while answer selection focuses on the strongest section. `LLM_MAX_TOKENS=384` limits the generated selection JSON, not the length of source excerpts displayed afterward. A reranker score is a ranking signal, not a calibrated confidence probability.
 
 ## Limitations and next steps
 
 - This library covers selected accounts-payable topics, not all ERP functionality.
+- Answer selection focuses on the highest-ranked parent section to suit the small local model. Other sections remain visible; full synthesis across several sections is a future extension.
 - The assistant cannot inspect a live tenant or confirm an actual issue's cause.
-- Numeric citation checks detect unknown source identifiers, not unsupported claims.
+- The output renderer validates source IDs and copies original passages. This prevents invented wording but does not prove that selected evidence is relevant, complete, or applicable to a live tenant.
+- Conservative scope rules reject recognized unsupported ERP products and requests for live company balances; they are not an exhaustive intent classifier.
 - Each question is retrieved independently; conversation is displayed but not used as implicit evidence.
 - Includes that cannot be resolved are omitted. Tables and long procedures can span chunks.
-- Formal retrieval and answer-quality evaluations are deferred until the application is stable.
+- A ten-question validation report and targeted regression tests are included; these curated cases are not a broad accuracy benchmark.
+
+## Walkthrough and validation
+
+- [Beginner code walkthrough](docs/WALKTHROUGH.md): every project function and the concepts behind it.
+- [Ten-question validation report](docs/VALIDATION.md): questions, reviewed outcomes, fixes, and limitations.
+- `evaluation/questions.json` and `evaluation/results.json`: reproducible inputs and recorded outputs. Source excerpts in evaluation artifacts retain the Microsoft documentation CC BY 4.0 license and attribution.
+
+With the app already running, execute `.venv/bin/python scripts/check_pipeline.py`. For fast checks without model inference, run `.venv/bin/python -m unittest discover -s tests -v`.
 
 ## Development
 

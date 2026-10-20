@@ -1,0 +1,725 @@
+{
+  "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+  "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36",
+  "dataset_commit": "cb977385a7ab71c306533725527086bc30d9f548",
+  "document_count": 21,
+  "source_content_license": "CC-BY-4.0",
+  "source_attribution": "Microsoft and the contributors to MicrosoftDocs/dynamics-365-unified-operations-public; evidence is excerpted and reformatted. Source URLs identify the original documents.",
+  "run_at": "2026-10-20T10:19:38.831147+00:00",
+  "pipeline": {
+    "mode": "Hybrid",
+    "reranking": true
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "question": "What is the difference between two-way and three-way invoice matching?",
+      "topic": "Matching",
+      "expected": "Two-way compares invoice and purchase-order prices. Three-way additionally compares invoice quantity with product receipts.",
+      "source": "accounts-payable-invoice-matching.md",
+      "type": "answer",
+      "answer": "-   **Invoice totals matching** \u2013 Match the total amounts on the invoice to the total amounts on the purchase order. This type of invoice matching includes the least amount of detail, so you can use this option to set up controls that minimize the staff time that is required to review invoice matching information.\n-   **Two-way matching** \u2013 Match the price information on the invoice to the price information on the purchase order.\n-   **Three-way matching** \u2013 Match the price information on the invoice to the price information on the purchase order. Also match the quantity information on the invoice to the quantity information on the product receipts that are selected for the invoice.\n-   **Charges matching** \u2013 Match the charges information (amounts) on the invoice to the charges information (amounts) on the purchase order. [1]\n\n- Two-way matching and three-way matching always match price information by the unit price. You can also configure these matching policies to match price information by the price total. [1]",
+      "evidence": "### [1] Accounts payable invoice matching overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/accounts-payable-invoice-matching.md) \u00b7 Accounts payable\n\n> An invoice arrives for 1,000 batteries at a price of 1.10 each. Your legal entity policy allows a 5 percent net unit price tolerance for this category of item. A price of 1.05 would be acceptable, but 1.10 is not. When you enter the invoice information, a price matching discrepancy is identified and you can save the invoice until the discrepancy is resolved.  \n> You can use the following types of **Accounts payable invoice matching**:  \n> -   **Invoice totals matching** \u2013 Match the total amounts on the invoice to the total amounts on the purchase order. This type of invoice matching includes the least amount of detail, so you can use this option to set up controls that minimize the staff time that is required to review invoice matching information.\n> -   **Two-way matching** \u2013 Match the price information on the invoice to the price information on the purchase order.\n> -   **Three-way matching** \u2013 Match the price information on the invoice to the price information on the purchase order. Also match the quantity information on the invoice to the quantity information on the product receipts that are selected for the invoice.\n> -   **Charges matching** \u2013 Match the charges information (amounts) on the invoice to the charges information (amounts) on the purchase order.  \n> &gt; [!NOTE]\n> &gt; Other forms of invoice validation can be done using vendor invoice policies.  \n> Two-way matching and three-way matching always match price information by the unit price. You can also configure these matching policies to match price information by the price total.\n> \n> Typically, invoice matching calculations are automatically performed when you edit vendor invoices on the **Vendor invoice** page. Alternatively, invoice matching can be performed on demand, as needed. Invoice matching on demand is controlled for the legal entity by the **Automatically update invoice** header status on the **Accounts payable parameters** page on the **Invoice validation** tab. Invoice matching can also be performed as part of an invoice review process. You can view the results of invoice matching on the **Vendor invoice** page and related invoice matching pages.\n\n---\n\n### [2] Three-way matching policies\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/three-way-matching-policies.md) \u00b7 Example: Three-way matching for items\n\n> ## Example: Three-way matching for items  \n> **Summary:** Ken is the controller at the corporate headquarters of a legal entity named Fabrikam. Ken decides that all vendor invoices that are based on purchase orders should be matched with purchase order lines (two-way matching). For purchases of items that are used as fixed assets, invoices should be matched with both the purchase order lines and the product receipt lines (three-way matching).\n> \n> Fabrikam operates with multiple legal entities and employees in all parts of the world. As the volume of transactions increases, discrepancies between receipts and invoices also increase. This situation results in assets being written off. You pay invoices from vendors, but the process doesn&#x27;t include identifying discrepancies when fewer items are received than were ordered, or when items aren&#x27;t received at all. Spending increases because employees still need tools and other materials to do their jobs. Ken wants to make sure that vendors are shipping the products that are ordered and the items are being received by Fabrikam employees. Therefore, Ken requires two-way and three-way matching for all legal entities in the organization. Invoice matching makes sure that problems with items that disappear or aren&#x27;t received can be tracked and resolved.  \n> The invoice matching policies in this example help meet these goals:  \n> - Ken is the controller for the Fabrikam enterprise. Ken can help the people in the organization to identify and correct problems with ordering, receiving, and paying for items (goods and services) from vendors.\n> - Phyllis and April are accounting managers in the accounts payable department for the United States division of Fabrikam. They can enforce corporate policy and make sure that invoices are paid only after the invoices are matched with the purchase order and receipts of goods and services, where applicable.\n> - Tony is the production manager for the United States division of Fabrikam. Tony and other production personnel can make sure that items are received as they were ordered from vendors, and are accounted for so that the personnel have what they must have in order to perform their jobs.\n\n---\n\n### [3] Three-way matching policies\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/three-way-matching-policies.md) \u00b7 Example: Three-way matching for item and vendor combinations\n\n> ## Example: Three-way matching for item and vendor combinations  \n> Summary: Ken is the controller at the corporate headquarters of a legal entity named Fabrikam. Ken decides that all invoices that are based on purchase orders should be matched with purchase order lines (two-way matching). Cassie is the bookkeeper at the Malaysia division of Fabrikam. Cassie specifies that selected items that are ordered from certain vendors in Malaysia should be matched with both the purchase order lines and product receipt lines (three-way matching). Cassie can also override the matching policy to a higher level of matching for specific purchase orders.  \n> The volume and amounts are small, and there have been some problems with delivery from some vendors in Malaysia. For these reasons, Cassie sets the level of control for certain item and vendor combinations that are procured in Malaysia to three-way matching.  \n> The invoice matching policies in this example help meet these goals:  \n> - Ken is the controller for the Fabrikam enterprise. Ken can help the people in the organization to identify and correct problems with ordering, receiving, and paying for items (goods and services) from vendors.\n> - Cassie is the bookkeeper for the Malaysia division of Fabrikam. Cassie can enforce corporate policy and make sure that invoices are paid only after they&#x27;re matched with purchase order lines and product receipts that represent the receipt of goods and services. Cassie can also increase the level of control to three-way matching for specific items to control operational costs.",
+      "status": "answered",
+      "timing": "Search: 15.3s \u00b7 Rerank: 25.8s \u00b7 Answer: 10.7s",
+      "elapsed_seconds": 52.03,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Accounts payable invoice matching overview",
+            0.03151,
+            0.9996
+          ],
+          [
+            "Three-way matching policies",
+            0.03048,
+            0.9974
+          ],
+          [
+            "Three-way matching policies",
+            0.0303,
+            0.9968
+          ],
+          [
+            "Accounts payable invoice matching overview",
+            0.03178,
+            0.9945
+          ],
+          [
+            "Accounts payable invoice matching overview",
+            0.02951,
+            0.9871
+          ],
+          [
+            "Three-way matching policies",
+            0.02951,
+            0.9847
+          ],
+          [
+            "Three-way matching policies",
+            0.03016,
+            0.9744
+          ],
+          [
+            "Accounts payable invoice matching overview",
+            0.02946,
+            0.97
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Both prices and the additional product-receipt quantity check are present; the excerpt also lists other matching types."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q02",
+      "question": "How is a vendor invoice due date calculated when the invoice date is blank, and what changes when I enter an invoice date?",
+      "topic": "Vendor invoices",
+      "expected": "Initially use posting date and payment terms; entering an invoice date recalculates the due date using that date and payment terms.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "answer": "- **Invoice received date** \u2013 The system sets this field to the current date.\n- **Posting date** \u2013 The system sets this field to the current date.\n- **Due date** \u2013 The system calculates this date based on the posting date and payment terms.\n- **Invoice date** \u2013 This field is blank by default. However, you can enter a value as needed. When you enter a value, the system recalculates the **Due date** based on the invoice date and the payment terms. [1]\n\n- On the **Pending vendor invoice detailed** page, the invoice header shows four dates: **Invoice received date**, **Invoice date**, **Posting date**, and **Due date**. When you create a vendor invoice, the system enters the following dates by default: [1]",
+      "evidence": "### [1] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Accounts payable\n\n> # Vendor invoice dates  \n> ]  \n> This article describes the dates that appear on vendor invoices.  \n> On the **Pending vendor invoice detailed** page, the invoice header shows four dates: **Invoice received date**, **Invoice date**, **Posting date**, and **Due date**. When you create a vendor invoice, the system enters the following dates by default:  \n> - **Invoice received date** \u2013 The system sets this field to the current date.\n> - **Posting date** \u2013 The system sets this field to the current date.\n> - **Due date** \u2013 The system calculates this date based on the posting date and payment terms.\n> - **Invoice date** \u2013 This field is blank by default. However, you can enter a value as needed. When you enter a value, the system recalculates the **Due date** based on the invoice date and the payment terms.\n> \n> Sometimes, a vendor invoice remains in a pending state for a long time after the period close. When it&#x27;s ready for posting, the process uses the old posting date of the past posting period. However, that period is now closed. Therefore, an Accounts payable (AP) clerk must manually change all the posting dates to the new posting period for all pending invoices that were previously created.  \n> The feature described in this article automatically adjusts the posting date according to business requirements.\n\n---\n\n### [2] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Impact of posting date changes\n\n> ## Impact of posting date changes  \n> When you change the posting date on a pending vendor invoice, the change affects the following fields:  \n> - **Due date**  \n> - If the **Invoice date** field is blank, the system recalculates the due date based on the new posting date and payment terms.\n> - If the **Invoice date** field is set, the posting date change doesn&#x27;t affect the due date.  \n> - **Cash discount date**  \n> - If the **Invoice date** field is blank, the system uses the new posting date to calculate the cash discount.\n> - If the **Invoice date** field is set, the cash discount isn&#x27;t changed.  \n> &gt; [!NOTE]\n> &gt; For the invoice register or invoice journals, the system doesn&#x27;t recalculate the due date and cash discount date based on the new posting date and payment terms.\n\n---\n\n### [3] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Parameter for automatically adjusting the vendor invoice posting date\n\n> ## Parameter for automatically adjusting the vendor invoice posting date  \n> Follow these steps to automatically adjust the posting date for vendor invoices.  \n> 1. Go to **Account payable \\&gt; Setup \\&gt; Account payable parameters**.\n> 1. On the **Ledger and sales tax** tab, in the **Adjust invoice posting date automatically** field, select one of the following values:  \n> - **No change** \u2013 The posting date isn&#x27;t automatically changed during posting. This value is selected by default.\n> - **Always change posting date to system date** \u2013 The posting date is automatically changed to the system date during posting.\n> - **Change posting date to system date when posting date period is closed or on hold** \u2013 The posting date is automatically changed to the system date during posting, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n> \n> - **Change posting date to first day of new period when posting date period is closed or on hold** \u2013 The posting date is changed to the first day of the new open period, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n> 1. The **Adjust invoice posting date to next year\u2019s open period** option is only enabled when you set **Adjust invoice posting date automatically** to a value other than **No change**. This option controls if invoice posting automatically adjusts the posting date in a new fiscal year. Select from the following values:\n> - **Block with error** - if you want to stop invoice posting with an error that the posting date can\u2019t be updated. This value is selected by default.\n> - **Allowed with warning** - if you want to allow invoice posting with a warning and update the posting date of the invoice to the next period\u2019s open period.  \n> &gt; [!NOTE]\n> &gt; The **Adjust the invoice posting date automatically** setting only affects the posting date adjustments in Vendor invoice, Invoice register journal, and Invoice journal.\n\n---\n\n### [4] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Validation\n\n> ## Validation  \n> Two other fields on the **Invoice** tab of the **Accounts payable parameters** page affect invoice processing:  \n> - If you set the **Check the invoice number used** field to **Reject duplicates within fiscal year**, the system uses the posting date to check for duplicate invoices during invoice posting.\n> - If you set the **Require document date on vendor invoice** field to **Error option**, the **Invoice date on pending invoice header** field is required. If the invoice date is later than the posting date, the system displays an error message.",
+      "status": "answered",
+      "timing": "Search: 2.8s \u00b7 Rerank: 24.9s \u00b7 Answer: 3.8s",
+      "elapsed_seconds": 31.65,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Vendor invoice dates",
+            0.03252,
+            0.9998
+          ],
+          [
+            "Vendor invoice dates",
+            0.03252,
+            0.9993
+          ],
+          [
+            "Vendor invoice dates",
+            0.03037,
+            0.5737
+          ],
+          [
+            "Vendor invoice dates",
+            0.02786,
+            0.5467
+          ],
+          [
+            "Vendor invoice dates",
+            0.03101,
+            0.0628
+          ],
+          [
+            "Vendor invoices overview",
+            0.02921,
+            0.05
+          ],
+          [
+            "Vendor invoices overview",
+            0.0292,
+            0.0471
+          ],
+          [
+            "Vendor invoice dates",
+            0.03102,
+            0.0007
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Both the posting-date default and recalculation from the entered invoice date are explicitly present."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q03",
+      "question": "Which posting-date adjustment options handle a closed or on-hold period for vendor invoices?",
+      "topic": "Vendor invoices",
+      "expected": "The date can move to the system date or the first day of the new open period when its period is closed or on hold.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "answer": "1. Go to **Account payable \\> Setup \\> Account payable parameters**.\n1. On the **Ledger and sales tax** tab, in the **Adjust invoice posting date automatically** field, select one of the following values:\n- **No change** \u2013 The posting date isn't automatically changed during posting. This value is selected by default.\n- **Always change posting date to system date** \u2013 The posting date is automatically changed to the system date during posting.\n- **Change posting date to system date when posting date period is closed or on hold** \u2013 The posting date is automatically changed to the system date during posting, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n- **Change posting date to first day of new period when posting date period is closed or on hold** \u2013 The posting date is changed to the first day of the new open period, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n1. The **Adjust invoice posting date to next year\u2019s open period** option is only enabled when you set **Adjust invoice posting date automatically** to a value other than **No change**. This option controls if invoice posting automatically adjusts the posting date in a new fiscal year. Select from the following values:\n- **Block with error** - if you want to stop invoice posting with an error that the posting date can\u2019t be updated. This value is selected by default.\n- **Allowed with warning** - if you want to allow invoice posting with a warning and update the posting date of the invoice to the next period\u2019s open period. [1]\n\n- > The **Adjust the invoice posting date automatically** setting only affects the posting date adjustments in Vendor invoice, Invoice register journal, and Invoice journal. [1]",
+      "evidence": "### [1] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Parameter for automatically adjusting the vendor invoice posting date\n\n> ## Parameter for automatically adjusting the vendor invoice posting date  \n> Follow these steps to automatically adjust the posting date for vendor invoices.  \n> 1. Go to **Account payable \\&gt; Setup \\&gt; Account payable parameters**.\n> 1. On the **Ledger and sales tax** tab, in the **Adjust invoice posting date automatically** field, select one of the following values:  \n> - **No change** \u2013 The posting date isn&#x27;t automatically changed during posting. This value is selected by default.\n> - **Always change posting date to system date** \u2013 The posting date is automatically changed to the system date during posting.\n> - **Change posting date to system date when posting date period is closed or on hold** \u2013 The posting date is automatically changed to the system date during posting, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n> \n> - **Change posting date to first day of new period when posting date period is closed or on hold** \u2013 The posting date is changed to the first day of the new open period, but only if the corresponding period of the posting date has a **Closed** or **On hold** status.\n> 1. The **Adjust invoice posting date to next year\u2019s open period** option is only enabled when you set **Adjust invoice posting date automatically** to a value other than **No change**. This option controls if invoice posting automatically adjusts the posting date in a new fiscal year. Select from the following values:\n> - **Block with error** - if you want to stop invoice posting with an error that the posting date can\u2019t be updated. This value is selected by default.\n> - **Allowed with warning** - if you want to allow invoice posting with a warning and update the posting date of the invoice to the next period\u2019s open period.  \n> &gt; [!NOTE]\n> &gt; The **Adjust the invoice posting date automatically** setting only affects the posting date adjustments in Vendor invoice, Invoice register journal, and Invoice journal.\n\n---\n\n### [2] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Accounts payable\n\n> # Vendor invoice dates  \n> ]  \n> This article describes the dates that appear on vendor invoices.  \n> On the **Pending vendor invoice detailed** page, the invoice header shows four dates: **Invoice received date**, **Invoice date**, **Posting date**, and **Due date**. When you create a vendor invoice, the system enters the following dates by default:  \n> - **Invoice received date** \u2013 The system sets this field to the current date.\n> - **Posting date** \u2013 The system sets this field to the current date.\n> - **Due date** \u2013 The system calculates this date based on the posting date and payment terms.\n> - **Invoice date** \u2013 This field is blank by default. However, you can enter a value as needed. When you enter a value, the system recalculates the **Due date** based on the invoice date and the payment terms.\n> \n> Sometimes, a vendor invoice remains in a pending state for a long time after the period close. When it&#x27;s ready for posting, the process uses the old posting date of the past posting period. However, that period is now closed. Therefore, an Accounts payable (AP) clerk must manually change all the posting dates to the new posting period for all pending invoices that were previously created.  \n> The feature described in this article automatically adjusts the posting date according to business requirements.\n\n---\n\n### [3] Vendor invoice dates\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md) \u00b7 Impact of posting date changes\n\n> ## Impact of posting date changes  \n> When you change the posting date on a pending vendor invoice, the change affects the following fields:  \n> - **Due date**  \n> - If the **Invoice date** field is blank, the system recalculates the due date based on the new posting date and payment terms.\n> - If the **Invoice date** field is set, the posting date change doesn&#x27;t affect the due date.  \n> - **Cash discount date**  \n> - If the **Invoice date** field is blank, the system uses the new posting date to calculate the cash discount.\n> - If the **Invoice date** field is set, the cash discount isn&#x27;t changed.  \n> &gt; [!NOTE]\n> &gt; For the invoice register or invoice journals, the system doesn&#x27;t recalculate the due date and cash discount date based on the new posting date and payment terms.\n\n---\n\n### [4] Vendor invoices overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoices-overview.md) \u00b7 Configure an automated task for vendor invoice workflow to post the vendor invoice using a batch job\n\n> ## Configure an automated task for vendor invoice workflow to post the vendor invoice using a batch job  \n> Add an automated posting task to the Vendor invoice workflow so that invoices are processed in a batch. Posting invoices in a batch lets the workflow process continue without having to wait for the posting to finish, which improves the overall performance of all the tasks submitted to the workflow.  \n> To post a vendor invoice in a batch, on the **Feature management** page, turn on the **Vendor invoice batch posting** parameter. Configure vendor invoice workflows by going to **Accounts payable &gt; Setup &gt; Accounts payable workflows**.\n> \n> You can see the **Post the vendor invoice using a batch** task in the workflow editor, regardless of whether the feature parameter, **Vendor invoice batch posting**, is enabled. When the feature parameter isn&#x27;t enabled, an invoice that contains the **Post the vendor invoice using a batch task** isn&#x27;t processed in workflow until the parameter is enabled. The **Post the vendor invoice using a batch** task must not be used in the same workflow as the **Post vendor invoices** automated task. Also, the **Post the vendor invoice using a batch** task should be the last element in the workflow configuration.  \n> You can specify the number of invoices to include in the batch, and the number of hours to wait before rescheduling a batch, by going to **Accounts payable &gt; Setup &gt; Accounts payable parameters &gt; Invoice &gt; Invoice workflow**.",
+      "status": "answered",
+      "timing": "Search: 1.0s \u00b7 Rerank: 23.4s \u00b7 Answer: 3.5s",
+      "elapsed_seconds": 28.04,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Vendor invoice dates",
+            0.03226,
+            0.9998
+          ],
+          [
+            "Vendor invoice dates",
+            0.03227,
+            0.9997
+          ],
+          [
+            "Vendor invoice dates",
+            0.03227,
+            0.9984
+          ],
+          [
+            "Vendor invoice dates",
+            0.01562,
+            0.9019
+          ],
+          [
+            "Accounting distributions and journal entries for vendor invoices",
+            0.01562,
+            0.3191
+          ],
+          [
+            "Vendor invoices overview",
+            0.0289,
+            0.1217
+          ],
+          [
+            "Vendor invoice center workspace overview",
+            0.02831,
+            0.0379
+          ],
+          [
+            "Vendor invoices overview",
+            0.02762,
+            0.0109
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Both closed/on-hold options are present: system date and first day of the new open period. The full settings list is retained."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q04",
+      "question": "Does vendor payment proposal automation automatically post payments?",
+      "topic": "Payments",
+      "expected": "No. It creates payments in the configured journal, which remains unposted; existing approval and validation processes still apply.",
+      "source": "automate-vendor-payment-proposal.md",
+      "type": "answer",
+      "answer": "- Payment proposal automations don't automatically post the payments. Therefore, you can continue to use any validation and workflow processes that you currently use to approve the payments that are created. [1]",
+      "evidence": "### [1] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Accounts payable\n\n> # Automate vendor payment proposals  \n> ]  \n> Organizations that pay vendors on a recurring schedule can now automate the process of generating vendor payment proposals. Vendor payment proposal automations define the following details:  \n> - When to run payment proposals\n> - What criteria to use to select the invoices that should be paid\n> - What vendor payment journal to save the resulting payments in  \n> Payment proposal automations don&#x27;t automatically post the payments. Therefore, you can continue to use any validation and workflow processes that you currently use to approve the payments that are created.  \n> &gt; [!NOTE]\n> &gt; To use this functionality, enable the **Vendor payment proposal automation** feature in **Feature management**.\n\n---\n\n### [2] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Define the occurrence of vendor payment proposals\n\n> ## Define the occurrence of vendor payment proposals  \n> Vendor payment proposal automations use the Process automation framework. Different business processes use this framework to define the recurrence of a selected process. For vendor payment proposals, access the automation at **Accounts payable \\&gt; Payment setup \\&gt; Process automation**.  \n> First, use the **Create new process** automation option, and select **Vendor payment proposal**. A wizard then guides you through the process of setting up the vendor payment proposal.\n\n---\n\n### [3] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 General page\n\n> ## General page  \n> On the **General** page of the wizard, enter the name of the vendor payment proposal that you&#x27;re creating. For example, if you pay all domestic vendors by check on Monday, enter a descriptive name such as **Domestic\\_Check**. The name that you enter appears in the process automation weekly view in the **Vendor payments** workspace.  \n> Next, define the owner of the payment journal that you create. The owner is usually the Accounts payable payment clerk, who is responsible for the payment journal after it&#x27;s created.  \n> The remaining settings on the page are generic and define the occurrence pattern for this version of the vendor payment proposal. For example, if an occurrence is for check payments on Monday, you can define it so that it runs weekly, and you can select Monday as the day of the week when it runs. You can also enter an early schedule time, such as 2:00 AM, so that the process automation finishes before the start of the next business day.\n> \n> It&#x27;s important that you understand that you&#x27;re using the wizard to define when the vendor payment proposal is processed. You&#x27;re not defining when the vendor payments are generated, printed, and posted. In the weekly view, the process automation for vendor payment proposals appears on the days that you select in the occurrence pattern.  \n> For more information about the other fields on the **General** page, see the process automation documentation.\n\n---\n\n### [4] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Vendor payment proposal page\n\n> ### Journal name  \n> The **Journal name** field defines the journal name that the vendor payments are created in. The results of the vendor payment proposal automation create payments in the defined journal, but the journal isn&#x27;t posted.",
+      "status": "answered",
+      "timing": "Search: 15.2s \u00b7 Rerank: 18.8s \u00b7 Answer: 7.0s",
+      "elapsed_seconds": 41.23,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Automate vendor payment proposals",
+            0.03279,
+            0.9992
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03151,
+            0.998
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.0308,
+            0.9979
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.0315,
+            0.997
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.02927,
+            0.9812
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.02904,
+            0.9809
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03105,
+            0.954
+          ],
+          [
+            "Create vendor payments by using a payment proposal",
+            0.02964,
+            0.7217
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "The excerpt explicitly says proposals do not automatically post payments; the restriction-preservation rerun agrees."
+      },
+      "git_revision": "882866fefe059eda7d955d2a6b95d3312af5ec3c",
+      "application_sha256": "7173a91f786804a709317c77ac1df3e893f2182a95fd5509c2fb07f8593523a6"
+    },
+    {
+      "id": "Q05",
+      "question": "A payment proposal runs on Wednesday and must include invoices due on or before Friday. What Number of days adjustment for To date should I use?",
+      "topic": "Payments",
+      "expected": "Use +2, as in the documented Wednesday March 25 to Friday March 27 example.",
+      "source": "automate-vendor-payment-proposal.md",
+      "type": "answer",
+      "answer": "- If you set the **Define to date criteria** option to **Yes**, use the **Number of days adjustment for To date** field to define the date when invoices are selected as the specified number of days before or after the date when the process runs. The number can be positive, negative, or 0 (zero). The invoices are paid when the due dates, or cash discount dates, are the specified number of days before or after the date when the process runs. For example, for all invoices that are due on or before Friday, the payment series creates payments to all vendors by check on Wednesday. In this case, set the **Number of days adjustment for To date** field to **2**. When the occurrence of the payment proposal runs on Wednesday, March 25, all invoices that have a due date or cash discount date on or before March 27 are selected for payment. [1]",
+      "evidence": "### [1] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Vendor payment proposal page\n\n> ### From date and to date  \n> Instead of defining a &quot;from&quot; date and a &quot;to&quot; date to select invoices based on the due date or cash discount date, use the **Define to date criteria** option and the **Number of days adjustment for To date** field to define the &quot;to&quot; date. The payment proposal automations don&#x27;t use the concept of a &quot;from&quot; date.  \n> By default, the **Define to date criteria** option is set to **No**. If you use this default value, the process selects all invoices for payment when the process runs, because no &quot;to&quot; date is defined.\n> \n> If you set the **Define to date criteria** option to **Yes**, use the **Number of days adjustment for To date** field to define the date when invoices are selected as the specified number of days before or after the date when the process runs. The number can be positive, negative, or 0 (zero). The invoices are paid when the due dates, or cash discount dates, are the specified number of days before or after the date when the process runs. For example, for all invoices that are due on or before Friday, the payment series creates payments to all vendors by check on Wednesday. In this case, set the **Number of days adjustment for To date** field to **2**. When the occurrence of the payment proposal runs on Wednesday, March 25, all invoices that have a due date or cash discount date on or before March 27 are selected for payment.\n\n---\n\n### [2] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Vendor payment proposal page\n\n> ### Minimum payment date  \n> The minimum payment date defines the earliest date used when creating payments. First, set the **Define minimum payment date criteria** option to **Yes** to use the minimum payment date functionality. If you set this option to **Yes**, use the **Number of days adjustment for minimum payment date** field to define the minimum payment date as the specified number of days before or after the date when the process runs. The number can be positive, negative, or zero. For example, the payment series generates payments on Wednesday to include all payments that have a minimum payment date of the preceding Monday. In this case, set the **Number of days adjustment for minimum payment date** field to **-2**.\n> \n> The following example shows how the fields for the &quot;to&quot; date and the minimum payment date work together. The payment proposal automation is set up to run on Wednesday. The **Number of days adjustment for To date** field is set to **1** to define the &quot;to&quot; date based on the due date. The **Number of days adjustment for minimum payment date** field is set to **-2**. If the payment process automation starts on Wednesday, March 25, all invoices that are due on or before March 26 are included in the payment proposal. Payment proposals are generated in the following way:  \n> - All invoices that are due on or before March 23 have a payment date of March 23.\n> - Invoices that are due on March 24 have a payment date of March 24.\n> - Invoices that are due on March 25 have a payment date of March 25.\n> - Invoices that are due on March 26 have a payment date of March 26.\n\n---\n\n### [3] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Vendor payment proposal page\n\n> ### Summarized payment date  \n> Use the summarized payment date only when the **Period** field is set to **Total** for the method of payment of the invoices. If you set the **Period** field to **Total** for your methods of payment, set the **Define summarized payment date criteria** option to **Yes**. If you set this option to **Yes**, use the **Number of days adjustment for summarized payment date** field to define the summarized payment date as the specified number of days before or after the date when the process runs. The number can be positive, negative, or zero. For example, the series generates payments on Wednesday, and the company wants to create a summarized payment on Wednesday. In this case, set the **Number of days adjustment for summarized payment date** field to **0**.\n\n---\n\n### [4] Automate vendor payment proposals\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md) \u00b7 Vendor payment proposal page\n\n> ## Vendor payment proposal page  \n> The next page in the wizard is the **Vendor payment proposal** page. Use it to define the criteria for selecting the vendor invoices that should be paid. In general, the same options are found in the payment proposal in the vendor payment journal. However, a few exceptions exist. For example, all dates on this page must be relative dates, because the payment proposal date changes every time that the proposal runs.",
+      "status": "answered",
+      "timing": "Search: 0.4s \u00b7 Rerank: 25.1s \u00b7 Answer: 6.0s",
+      "elapsed_seconds": 31.65,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Automate vendor payment proposals",
+            0.03252,
+            0.9997
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03252,
+            0.9997
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03126,
+            0.9994
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03126,
+            0.993
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.03055,
+            0.9901
+          ],
+          [
+            "Automate vendor payment proposals",
+            0.02942,
+            0.8222
+          ],
+          [
+            "Create vendor payments by using a payment proposal",
+            0.0276,
+            0.2942
+          ],
+          [
+            "Create vendor payments by using a payment proposal",
+            0.02899,
+            0.0895
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "The Friday/Wednesday example explicitly sets the To date adjustment to 2; no different minimum-date example replaces it."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q06",
+      "question": "What are the three main components of the scanned vendor invoice automation solution?",
+      "topic": "Automation",
+      "expected": "Data entities for invoice header, lines and attachments; invoice exception processing; side-by-side attachment viewer.",
+      "source": "vendor-invoice-automation.md",
+      "type": "answer",
+      "answer": "+ Data entities for the invoice header, invoice lines, and invoice attachments\n+ Exception processing for invoices\n+ A side-by-side attachment viewer in invoices [1]\n\n- The rest of this article provides detailed descriptions of these solution components. [1]",
+      "evidence": "### [1] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Solution context\n\n> ### Solution components  \n> The solution footprint consists of the following components:  \n> + Data entities for the invoice header, invoice lines, and invoice attachments\n> + Exception processing for invoices\n> + A side-by-side attachment viewer in invoices  \n> The rest of this article provides detailed descriptions of these solution components.\n\n---\n\n### [2] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Accounts payable\n\n> # Invoice automation for scanned documents  \n> ]  \n> This article explains the data entities that are available for end-to-end automation of vendor invoices, including invoices with attachments.  \n> Organizations that want to streamline their accounts payable (AP) processes often identify invoice processing as one of the top process areas that should be more efficient. In many cases, these organizations offload the processing of paper invoices to a third-party optical character recognition (OCR) service provider. They then receive machine-readable invoice metadata together with a scanned image of each invoice. To help with automation, a &quot;last mile&quot; solution is then built to enable consumption of these artifacts in the invoicing system. Now this &quot;last mile&quot; automation is enabled out of the box, through an invoice automation solution.\n\n---\n\n### [3] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Solution context\n\n> ## Solution context  \n> The invoice automation solution enables a standard interface that can accept invoice metadata for the invoice header and invoice lines, and also attachments that are applicable to the invoice. Any external system that can generate artifacts that comply with this interface can send the feed for automatic processing of invoices and attachments.  \n> The following illustration shows a sample integration scenario where Contoso partners with an OCR service provider for vendor invoice processing. Contoso&#x27;s vendors send invoices to the service provider by email. Through OCR processing, the service provider generates invoice metadata (header and/or lines) and a scanned image of the invoice. An integration layer then transforms these artifacts so that they can be consumed.  \n> Several variations of the preceding scenario are possible if invoice integration is required. Data migration is another use case where this interface can be used to create invoices and attachments.\n\n---\n\n### [4] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Data entities\n\n> ## Data entities  \n> A data package is the unit of work that you send to create invoice headers, invoice lines, and invoice attachments. The following data entities represent the artifacts that make up the data package:  \n> + Vendor invoice header\n> + Vendor invoice line\n> + Vendor invoice document attachment  \n> The Vendor invoice document attachment entity is a new data entity introduced as part of this feature. The Vendor invoice header entity is modified to support attachments. The Vendor invoice line entity isn&#x27;t modified for this feature.  \n> For detailed information about data packages, see [Data management overview](../../fin-ops-core/dev-itpro/data-entities/data-entities-data-packages.md). For information about how to create data packages by using the data management workspace, see [Process and consume data packages in Dynamics 365 finance and operations apps solution](../../fin-ops-core/dev-itpro/lcs-solutions/process-data-packages-lcs-solutions.md).  \n> To quickly generate test data that includes invoices and attachments, follow these steps:  \n> 1. Sign in to your instance.\n> 1. Go to **Accounts payables** &gt; **Invoices** &gt; **Pending vendor invoices**.\n> 1. Create invoices that have lines and attachments.  \n> &gt; [!NOTE]\n> &gt; The attachments must be header attachments. Currently, the Vendor invoice document attachment entity doesn&#x27;t support line attachments.  \n> 1. Open the **Data management** workspace.\n> 1. Create an export job that includes the Vendor invoice header, Vendor invoice line, and Vendor invoice document attachment entities.\n> 1. Export the data.\n> 1. Download the exported data as a package. You can now use the package to import data into target instances for testing purposes.",
+      "status": "answered",
+      "timing": "Search: 0.6s \u00b7 Rerank: 20.1s \u00b7 Answer: 1.1s",
+      "elapsed_seconds": 21.95,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Invoice automation for scanned documents",
+            0.03227,
+            0.996
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03252,
+            0.99
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.032,
+            0.9892
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03125,
+            0.1689
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.02881,
+            0.044
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03008,
+            0.0109
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.02872,
+            0.0089
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.02885,
+            0.0003
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "All three solution components are present, not merely the separate data-entity list."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q07",
+      "question": "When vendor invoices require workflow review, which button sends an invoice for review instead of posting it?",
+      "topic": "Vendor invoices",
+      "expected": "Submit sends the invoice through workflow; it replaces Post for the review process.",
+      "source": "vendor-invoices-overview.md",
+      "type": "answer",
+      "answer": "- Your organization might use workflows to manage the review process for vendor invoices. Workflow review can be required for the invoice header, the invoice line, or both. The workflow controls apply to the header or the line, depending on where the focus is when you select the control. Instead of the **Post** button, a **Submit** button sends the vendor invoice through the review process. [1]",
+      "evidence": "### [1] Vendor invoices overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoices-overview.md) \u00b7 Submitting a vendor invoice for review\n\n> ## Submitting a vendor invoice for review  \n> Your organization might use workflows to manage the review process for vendor invoices. Workflow review can be required for the invoice header, the invoice line, or both. The workflow controls apply to the header or the line, depending on where the focus is when you select the control. Instead of the **Post** button, a **Submit** button sends the vendor invoice through the review process.\n\n---\n\n### [2] Vendor invoice center workspace overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-workspace.md) \u00b7 Accounts payable\n\n> ### Workflow stage  \n> Invoices in the **Workflow** stage can have the following statuses:  \n> - **In process** \u2013 The invoice is waiting for approval. Additional fields that are available for pending invoices show the person who must approve each invoice, the pending time, and the due date for the approval.\n> - **Workflow failed** \u2013 The invoice was successfully submitted to the workflow, but an error occurred during the process because of additional validations in the workflow. This error requires that you update the invoice or settings before you resubmit the invoice to the workflow.\n> - **Workflow rejected** \u2013 The invoice was submitted for approval, but it was rejected for specific reasons. The list provides the rejection reason that the approver provided.\n> - **For my approvals** \u2013 The invoice was submitted for approval in the workflow and is awaiting review. This process applies specifically to invoices that are configured with vendor invoice workflow settings.\n\n---\n\n### [3] Vendor invoice center workspace overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-workspace.md) \u00b7 Accounts payable\n\n> # Vendor invoice center workspace overview  \n> ]  \n> This article provides information about the **Vendor invoice center** workspace in Microsoft Dynamics 365 Finance. This workspace offers a view of the overall processing status of vendor invoices at different stages. It helps Accounts payable (AP) managers or AP clerks make decisions and handle exceptions more efficiently.  \n> From the **Vendor invoice center** workspace, users can complete the following tasks:  \n> - Manage vendor invoices.\n> - Import invoices.\n> - Apply prepayments.\n> - Match receipts.\n> - Submit invoices to the workflow.\n> - Approve the workflow.\n> - Post invoices.  \n> Drill-down lists provide detailed invoice information and help manage invoices more efficiently.  \n> The **Vendor invoice center** workspace is available when the **(Preview) New vendor invoice center** feature is enabled in Feature management. It can&#x27;t exist together with the old **Vendor invoice automation** workspace.\n\n---\n\n### [4] Vendor invoice center workspace overview\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-workspace.md) \u00b7 Accounts payable\n\n> ### Vendor invoice center workspace  \n> The **Vendor invoice center** workspace consists of the following elements:  \n> - **Global filter for legal entity** \u2013 AP clerks can switch between legal entities to review the overall invoice processing status. The invoice number and pending vendor invoice list show the appropriate counts or lists, based on the selected legal entity.\n> - **Invoice processing tiles** \u2013 These tiles show the different stages of invoices:  \n> - Capture and import\n> - Manual entry\n> - Automation\n> - Workflow\n> - To post  \n> Each stage has one or more statuses that help AP clerks review the detailed list of the invoices. For each invoice status, quick actions are available to help accelerate vendor invoice processing.",
+      "status": "answered",
+      "timing": "Search: 0.7s \u00b7 Rerank: 18.6s \u00b7 Answer: 1.3s",
+      "elapsed_seconds": 20.76,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Vendor invoices overview",
+            0.03279,
+            0.9998
+          ],
+          [
+            "Vendor invoice center workspace overview",
+            0.03016,
+            0.9918
+          ],
+          [
+            "Vendor invoice center workspace overview",
+            0.01562,
+            0.9429
+          ],
+          [
+            "Vendor invoice center workspace overview",
+            0.03031,
+            0.908
+          ],
+          [
+            "Vendor invoices overview",
+            0.03226,
+            0.7635
+          ],
+          [
+            "Vendor invoices overview",
+            0.02996,
+            0.6723
+          ],
+          [
+            "Vendor invoice automation workspace",
+            0.02783,
+            0.3469
+          ],
+          [
+            "Vendor invoice dates",
+            0.02783,
+            0.0107
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Submit is explicitly distinguished from Post for workflow review."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q08",
+      "question": "Can I set two documents as the default attachment on one vendor invoice?",
+      "topic": "Automation",
+      "expected": "No. Only one document can be the default attachment; it appears when the invoice opens.",
+      "source": "vendor-invoice-automation.md",
+      "type": "answer",
+      "answer": "- If a vendor invoice has more than one attachment, you can set one of the documents as the default attachment on the **Attachments** page. The **Is default attachment** option is a new option that was added as part of this feature. This option is also exposed in the Vendor invoice document attachment data entity. Therefore, the default attachment can be set through integrations. [1]\n\n- You can set only one document as the default attachment. After you set a document as the default attachment, it automatically appears in the attachment viewer when the invoice opens. If you don't set any document as the default attachment, the viewer doesn't automatically show any attachment when the invoice opens. [1]",
+      "evidence": "### [1] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Side-by-side attachment viewer\n\n> ### Default attachment  \n> If a vendor invoice has more than one attachment, you can set one of the documents as the default attachment on the **Attachments** page. The **Is default attachment** option is a new option that was added as part of this feature. This option is also exposed in the Vendor invoice document attachment data entity. Therefore, the default attachment can be set through integrations.  \n> You can set only one document as the default attachment. After you set a document as the default attachment, it automatically appears in the attachment viewer when the invoice opens. If you don&#x27;t set any document as the default attachment, the viewer doesn&#x27;t automatically show any attachment when the invoice opens.\n\n---\n\n### [2] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Data entities\n\n> ## Data entities  \n> A data package is the unit of work that you send to create invoice headers, invoice lines, and invoice attachments. The following data entities represent the artifacts that make up the data package:  \n> + Vendor invoice header\n> + Vendor invoice line\n> + Vendor invoice document attachment  \n> The Vendor invoice document attachment entity is a new data entity introduced as part of this feature. The Vendor invoice header entity is modified to support attachments. The Vendor invoice line entity isn&#x27;t modified for this feature.  \n> For detailed information about data packages, see [Data management overview](../../fin-ops-core/dev-itpro/data-entities/data-entities-data-packages.md). For information about how to create data packages by using the data management workspace, see [Process and consume data packages in Dynamics 365 finance and operations apps solution](../../fin-ops-core/dev-itpro/lcs-solutions/process-data-packages-lcs-solutions.md).  \n> To quickly generate test data that includes invoices and attachments, follow these steps:  \n> 1. Sign in to your instance.\n> 1. Go to **Accounts payables** &gt; **Invoices** &gt; **Pending vendor invoices**.\n> 1. Create invoices that have lines and attachments.  \n> &gt; [!NOTE]\n> &gt; The attachments must be header attachments. Currently, the Vendor invoice document attachment entity doesn&#x27;t support line attachments.  \n> 1. Open the **Data management** workspace.\n> 1. Create an export job that includes the Vendor invoice header, Vendor invoice line, and Vendor invoice document attachment entities.\n> 1. Export the data.\n> 1. Download the exported data as a package. You can now use the package to import data into target instances for testing purposes.\n\n---\n\n### [3] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Security\n\n> ### Vendor invoice attachment  \n> The following privileges provide read-only access or read/write access to the attachment viewer for the highlighting, block, and annotation actions.  \n> &gt; [!NOTE]\n> &gt; By default, the roles mentioned in this section provide read-only access to the invoice images in the attachment viewer. If a role needs write access to the images, grant write access to that role by using the privilege and duty described in this section.  \n> + **Maintain vendor invoice header entity image** \u2013 This privilege provides read/write access to the invoice images in the attachment viewer.\n> + **View vendor invoice header entity image** \u2013 This privilege provides read-only view to the invoice image in the attachment viewer.  \n> The following duties provide read-only access to the attachment viewer for those actions:  \n> + **Maintain vendor invoices** \u2013 The Maintain vendor invoice header entity image privilege is assigned to this duty.  \n> The following roles provide read-only access to the attachment viewer for those actions:  \n> + **Accounts payable clerk** and **Accounts payable manager** \u2013 The Maintain vendor invoices duty is assigned to these roles.  \n> By default, if the user role provides edit rights on any page, the user also has edit rights on the attachments viewer for the highlighting, block, and annotation actions. However, if there are scenarios where a specific role should have edit rights on the page but not on the attachment viewer, use the appropriate privileges from the preceding list to satisfy the use case.  \n> ---\n> author: buck1ey  \n> ms.topic: include\n> ms.date: 11/01/2022\n> ms.author: josaw\n> ---  \n> ]\n\n---\n\n### [4] Invoice automation for scanned documents\n[Open source](https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md) \u00b7 Side-by-side attachment viewer\n\n> ## Side-by-side attachment viewer  \n> To help you easily view the attachments for vendor invoices, the following pages that are used in the invoicing process now provide an attachment viewer:  \n> + **Exception handling**\n> + **Pending vendor invoices** page (also available in the invoice review process)\n> + **Invoice journal** inquiry page (for posted invoices)  \n> Here is the main functionality that the attachment viewer provides:  \n> + View all attachment types that Document management supports (files, images, URLs, and notes).\n> + View multi-page TIFF files.\n> + Perform the following actions on image files:\n> + Highlight parts of the image.\n> + Block parts of the image.\n> + Add annotations to the image.\n> + Zoom in and out on the image.\n> + Pan the image.\n> + Undo and redo actions.\n> + Fit the image to size.  \n> &gt; [!NOTE]\n> &gt; These actions are available only for image files (JPEG, TIFF, PNG, and so on). Any changes that you make to an image by using these actions are saved to the image file. Currently, the attachment viewer doesn&#x27;t include versioning or auditing capabilities.",
+      "status": "answered",
+      "timing": "Search: 1.0s \u00b7 Rerank: 16.4s \u00b7 Answer: 2.4s",
+      "elapsed_seconds": 19.92,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [
+          [
+            "Invoice automation for scanned documents",
+            0.03279,
+            0.9998
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03062,
+            0.9005
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03175,
+            0.8152
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03077,
+            0.5351
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03055,
+            0.4494
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03008,
+            0.4378
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.02991,
+            0.0845
+          ],
+          [
+            "Invoice automation for scanned documents",
+            0.03062,
+            0.025
+          ]
+        ],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true,
+        "valid_citation_ids": true,
+        "expected_source_retrieved": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "The final rerun includes the explicit statement that only one document can be the default attachment."
+      },
+      "git_revision": "882866fefe059eda7d955d2a6b95d3312af5ec3c",
+      "application_sha256": "7173a91f786804a709317c77ac1df3e893f2182a95fd5509c2fb07f8593523a6"
+    },
+    {
+      "id": "Q09",
+      "question": "Which SAP transaction code should I use to reverse a vendor invoice?",
+      "topic": "All topics",
+      "expected": "Abstain: the corpus covers Dynamics 365 Finance, not SAP transaction codes.",
+      "source": null,
+      "type": "abstain",
+      "answer": "Not covered by this library. The indexed sources cover Dynamics 365 Finance Accounts payable, not the requested ERP product.",
+      "evidence": "",
+      "status": "abstained",
+      "timing": "Search: 0.0s \u00b7 Rerank: 0.0s \u00b7 Answer: 0.0s",
+      "elapsed_seconds": 0.08,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Unsupported SAP request is declined before retrieval and generation; no Dynamics procedure is substituted."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    },
+    {
+      "id": "Q10",
+      "question": "What was our company's unpaid vendor balance yesterday? Give the exact amount in rupees.",
+      "topic": "All topics",
+      "expected": "Abstain: public product documentation contains no live company balances or transactions.",
+      "source": null,
+      "type": "abstain",
+      "answer": "I cannot access live company balances or transactions. This library contains public product documentation, not company financial records.",
+      "evidence": "",
+      "status": "abstained",
+      "timing": "Search: 0.0s \u00b7 Rerank: 0.0s \u00b7 Answer: 0.0s",
+      "elapsed_seconds": 0.13,
+      "rankings": {
+        "headers": [
+          "Document",
+          "Fusion score",
+          "Rerank score"
+        ],
+        "data": [],
+        "metadata": null
+      },
+      "checks": {
+        "no_runtime_error": true,
+        "expected_behavior": true
+      },
+      "mechanical_pass": true,
+      "manual_review": {
+        "outcome": "accepted",
+        "note": "Live-company balance request is declined; fictional documentation amounts are not presented as user financial data."
+      },
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36"
+    }
+  ],
+  "validation_runs": [
+    {
+      "run_at": "2026-10-20T10:19:38.831147+00:00",
+      "git_revision": "f9ec7ba07ecfcc5a8fccade0b77db45870a78f32",
+      "application_sha256": "f662b16fa509e653ded3b8efdb28d76bd09caf726387b1347ec00a9c81207a36",
+      "case_ids": [
+        "Q01",
+        "Q02",
+        "Q03",
+        "Q04",
+        "Q05",
+        "Q06",
+        "Q07",
+        "Q08",
+        "Q09",
+        "Q10"
+      ]
+    },
+    {
+      "run_at": "2026-10-20T10:25:28.176215+00:00",
+      "git_revision": "882866fefe059eda7d955d2a6b95d3312af5ec3c",
+      "application_sha256": "7173a91f786804a709317c77ac1df3e893f2182a95fd5509c2fb07f8593523a6",
+      "case_ids": [
+        "Q04",
+        "Q08"
+      ]
+    }
+  ],
+  "review_summary": {
+    "reviewed_cases_passed": 10,
+    "supported_questions": 8,
+    "correct_abstentions": 2,
+    "regression_tests_passed": 24,
+    "scope": "Curated development cases used while fixing the app; not a held-out accuracy benchmark.",
+    "review_method": "Answers compared manually with expected summaries and retrieved Microsoft source excerpts; mechanical checks cover source IDs and runtime behavior."
+  }
+}

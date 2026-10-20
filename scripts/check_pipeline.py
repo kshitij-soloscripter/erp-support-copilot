@@ -6,9 +6,9 @@ against its expected summary and evidence before marking a case accepted.
 
 import argparse
 import hashlib
-import subprocess
 import json
 import re
+import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter

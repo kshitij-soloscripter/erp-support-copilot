@@ -7,6 +7,7 @@ import logging
 import gradio as gr
 
 from erp_copilot.config.settings import get_settings
+from erp_copilot.generation.policy import ABSTENTION
 from erp_copilot.generation.runtime import download_model, start
 from erp_copilot.ingestion.download import download_corpus
 from erp_copilot.pipeline import Copilot
@@ -55,7 +56,13 @@ def create_app() -> gr.Blocks:
                     ("Answer", "generation_seconds"),
                 ]
             )
-            return history, "\n\n---\n\n".join(sources), timing, rows, ""
+            evidence_text = "\n\n---\n\n".join(sources)
+            if result["answer"].startswith(ABSTENTION) and sources:
+                evidence_text = (
+                    "No answer was established. These are related search results, not supporting citations.\n\n"
+                    + evidence_text
+                )
+            return history, evidence_text, timing, rows, ""
         except Exception as exc:
             LOGGER.exception("Question failed")
             history.append(
@@ -167,7 +174,7 @@ def create_app() -> gr.Blocks:
             )
         with gr.Tab("About"):
             gr.Markdown(
-                "## From question to evidence\nLangChain orchestrates dense Qwen retrieval and BM25 keyword retrieval, Reciprocal Rank Fusion, Qwen reranking, and a local Unsloth quantized Qwen answer model.\n\nThe library covers vendor invoices and matching in Dynamics 365 Finance. It does not connect to a live ERP installation. Citation checks validate source identifiers; they do not prove that every generated claim is supported.\n\nCode modules separate ingestion, embedding, retrieval, reranking, generation, configuration, and interface. See the repository validation report for tested examples and remaining limitations."
+                "## From question to evidence\nLangChain orchestrates dense Qwen retrieval and BM25 keyword retrieval, Reciprocal Rank Fusion, Qwen reranking, and a local Unsloth quantized Qwen answer model.\n\nThe library covers vendor invoices and matching in Dynamics 365 Finance. It does not connect to a live ERP installation. Answers use source excerpts whose wording and source IDs are checked. This does not guarantee that the selected excerpts fully answer the question.\n\nCode modules separate ingestion, embedding, retrieval, reranking, generation, configuration, and interface. See the repository validation report for tested examples and remaining limitations."
             )
     return app
 

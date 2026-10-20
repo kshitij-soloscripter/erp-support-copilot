@@ -28,6 +28,7 @@ def classify_answer(answer: str) -> str:
             "invalid source reference",
             "model did not finish",
             "empty answer",
+            "verified excerpt",
             "answer was truncated",
         )
     ):

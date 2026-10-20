@@ -7,7 +7,7 @@ from langchain_core.runnables import RunnableLambda
 
 from erp_copilot.config.settings import get_settings
 from erp_copilot.generation.answer import generate_answer
-from erp_copilot.generation.policy import ABSTENTION, question_limitation
+from erp_copilot.generation.policy import question_limitation
 from erp_copilot.reranking.qwen import QwenReranker
 from erp_copilot.retrieval.store import SearchStore
 
@@ -43,8 +43,6 @@ class Copilot:
         started = perf_counter()
         state["answer"] = generate_answer(state["question"], state["context"])
         state["generation_seconds"] = perf_counter() - started
-        if state["answer"].startswith(ABSTENTION):
-            state["context"] = []
         return state
 
     def ask(self, question, mode="Hybrid", rerank=True, topic="All topics"):

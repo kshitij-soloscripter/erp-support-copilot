@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     retrieval_k: int = Field(default=16, ge=1)
     rerank_candidates: int = Field(default=8, ge=1)
     context_chunks: int = Field(default=4, ge=1)
+    min_excerpt_score: float = Field(default=0.98, ge=0.0, le=1.0)
     document_limit: int = Field(default=45, ge=1)
     qdrant_url: str | None = None
     qdrant_api_key: str | None = None

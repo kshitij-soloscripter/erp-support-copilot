@@ -77,9 +77,16 @@ class QwenReranker:
 
         if not units:
             return []
+        # A small local selector works best with the strongest parent section.
+        # Other retrieved sections remain visible as related evidence in Gradio.
+        primary_source = units[0]["source"]
+        units = [u for u in units if u["source"] == primary_source]
         texts = [f"{u.get('heading', '')}\n{u['text']}" for u in units]
         scores = BM25Okapi([tokenize(t) for t in texts]).get_scores(tokenize(query))
         indices = sorted(range(len(units)), key=lambda i: scores[i], reverse=True)[:12]
         candidates = [Document(page_content=texts[i], metadata={"unit": units[i]}) for i in indices]
         ranked = self.rerank(query, candidates)
-        return [{**d.metadata["unit"], "id": i + 1} for i, d in enumerate(ranked[:limit])]
+        return [
+            {**d.metadata["unit"], "id": i + 1, "relevance_score": d.metadata["rerank_score"]}
+            for i, d in enumerate(ranked[:limit])
+        ]

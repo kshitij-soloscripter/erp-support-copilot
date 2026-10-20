@@ -65,7 +65,11 @@ def build_evidence_units(docs: list[Document]) -> list[dict]:
             or doc.metadata.get("title", "")
         )
         for block in split_evidence_blocks(doc.page_content):
-            parts = re.split(r"(?<=[.!?])\s+", block) if len(block) > 1800 else [block]
+            parts = (
+                re.split(r"(?<=[.!?])\s+", block)
+                if len(block) > 1800 and not re.match(r"^(?:[-+*]|\d+[.)])\s+", block)
+                else [block]
+            )
             for part in parts:
                 if len(part) < 20:
                     continue
@@ -83,11 +87,29 @@ def extract_answer(payload: dict, docs: list[Document], units: list[dict] | None
         or len(payload["units"]) > 2
     ):
         return "The model could not produce a verified excerpt. Please ask a narrower question."
-    if not payload["units"]:
-        return ABSTENTION
     available = {u["id"]: u for u in (units if units is not None else build_evidence_units(docs))}
+    selected = payload["units"]
+    fallback = False
+    if not selected:
+        strong = [
+            u
+            for u in available.values()
+            if u.get("relevance_score", 0) >= get_settings().min_excerpt_score
+        ]
+        if not strong:
+            return ABSTENTION
+        selected = [max(strong, key=lambda u: u["relevance_score"])["id"]]
+        fallback = True
+    if any(type(identifier) is not int or identifier not in available for identifier in selected):
+        return "The answer contained an invalid source reference. Please retry with a more specific question."
+    # Keep the strongest neural evidence as the anchor; the small generator may
+    # select complementary evidence but cannot discard the best retrieved unit.
+    ranked = [u for u in available.values() if "relevance_score" in u]
+    if ranked:
+        anchor = max(ranked, key=lambda u: u["relevance_score"])["id"]
+        selected = [anchor, *[i for i in sorted(selected) if i != anchor]][:2]
     bullets, seen = [], set()
-    for identifier in payload["units"]:
+    for identifier in selected:
         if type(identifier) is not int or identifier not in available:
             return "The answer contained an invalid source reference. Please retry with a more specific question."
         unit = available[identifier]
@@ -97,9 +119,10 @@ def extract_answer(payload: dict, docs: list[Document], units: list[dict] | None
         ):
             return "The model could not produce a verified excerpt. Please ask a narrower question."
         if (source, text) not in seen:
-            bullets.append(f"- {text.replace(chr(10), chr(10) + '  ')} [{source}]")
+            rendered = text if re.match(r"^(?:[-+*]|\d+[.)])\s+", text) else f"- {text}"
+            bullets.append(f"{rendered} [{source}]")
             seen.add((source, text))
-    return "\n\n".join(bullets)
+    return ("Closest source excerpt:\n\n" if fallback else "") + "\n\n".join(bullets)
 
 
 def generate_answer(

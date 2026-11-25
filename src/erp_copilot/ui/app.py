@@ -228,7 +228,7 @@ def create_app() -> gr.Blocks:
                 "Edits can shift neighboring chunk boundaries. BM25 is refreshed from the complete chunk list. "
                 "Use public, non-sensitive data. Old source bytes are archived locally."
             )
-            revision_document = gr.Dropdown(document_choices(), label="Existing document")
+            revision_document = gr.Dropdown(document_choices(), value=None, label="Existing document")
             refresh = gr.Button("Refresh document list")
             original_file = gr.File(label="Download current source", interactive=False)
             revision_file = gr.File(label="Revised Markdown", file_types=[".md"], type="filepath")

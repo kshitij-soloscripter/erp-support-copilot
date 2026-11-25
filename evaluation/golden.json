@@ -1,0 +1,469 @@
+{
+  "version": 1,
+  "name": "Finance AP golden regression set",
+  "usage": "Curated regression set, not a held-out accuracy benchmark. Q01\u2013Q10 previously guided development. Expected facts are deterministic checks, not a factual correctness judge.",
+  "attribution": "Microsoft and contributors to MicrosoftDocs/dynamics-365-unified-operations-public; documentation CC BY 4.0. Expected answers are paraphrased.",
+  "snapshot_commit": "cb977385a7ab71c306533725527086bc30d9f548",
+  "source_hashes": {
+    "accounts-payable-invoice-matching.md": "23fab7e813d34ce215cda53bd06f3860761d94247a7c0ca84742df7df5f05f34",
+    "automate-vendor-payment-proposal.md": "4050e4e950ff018e0fce91d8393113f629f5ac13ee716570836bea2a05674a9d",
+    "reverse-vendor-payment.md": "27166b15e93c187b243bf3f3bb3c884ce843645b556b7b6da22ad825647c7e7e",
+    "vendor-invoice-automation.md": "c295728ff3e4358b4e52571c2ae12864344b40c4bd3bc3df91d745c0a3fee14e",
+    "vendor-invoice-dates.md": "53da8b92fff1eb5b7e306e72f01f5b62652c48ae8b1faf289b09a8a6fd0adfd3",
+    "vendor-invoices-overview.md": "ffc8008117cd21cbfcd6a9c29b746e21237e74aff45cc792583dbd7db8df6a78",
+    "view-automated-vendor-invoice.md": "4c0296263b1fc5ab266247eaaaa29ffcd9ce03800fa809c04670b45e4e1baf33"
+  },
+  "cases": [
+    {
+      "id": "Q01",
+      "question": "What is the difference between two-way and three-way invoice matching?",
+      "topic": "Matching",
+      "expected": "Two-way compares invoice and purchase-order prices. Three-way additionally compares invoice quantity with product receipts.",
+      "source": "accounts-payable-invoice-matching.md",
+      "type": "answer",
+      "facts": [
+        [
+          "two-way",
+          "two way"
+        ],
+        [
+          "three-way",
+          "three way"
+        ],
+        [
+          "product receipt",
+          "product receipts"
+        ],
+        [
+          "price"
+        ]
+      ],
+      "evidence_anchor": "Two-way matching",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "7ecbd513358c59f3c06c144e2d6af0a1446e23a7ce15a97fc5620055e80a2b1b",
+        "926154e472b6df7329d6b9c7b437773a788f1493f2d5f178165e93ab6a9b92ba",
+        "f5becc38125815b37684b7c948cc1ececa5f36f15f5a66c29077c4181f6c6053",
+        "052dd183c671f2d753311d4f5e920e6632034d71610b11ba13e12cd30cc8db8a",
+        "5897970498530d5be381958d104a940425ea0c24519e4c9759295a591f9b993f",
+        "906e99a6e369828a19d77d31dc9f4e9a392db5ae168239fae6e53fd35a368838",
+        "193d62940f3488a74eecb6d9c7aae3f447170fbae119d559435eea6b9b189141",
+        "5ec8fc5d3561ae0effbb0165438ff24ab817fad48f9a0cf83ca7840cd9958984"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/accounts-payable-invoice-matching.md"
+    },
+    {
+      "id": "Q02",
+      "question": "How is a vendor invoice due date calculated when the invoice date is blank, and what changes when I enter an invoice date?",
+      "topic": "Vendor invoices",
+      "expected": "Initially use posting date and payment terms; entering an invoice date recalculates the due date using that date and payment terms.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "facts": [
+        [
+          "posting date"
+        ],
+        [
+          "invoice date"
+        ],
+        [
+          "payment terms"
+        ]
+      ],
+      "evidence_anchor": "Invoice date",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "577ea1f0bb440d3f095c291dafee6fc9b04aa9f1ab740a07312877dbd3c5460e",
+        "661573b2fe7b225da0dd04522ec52597383fb92a73b15cc6f65cbad666070720",
+        "31fdc5a5db37d438de7c36cbe8aa1fb23cdaddbb91cacd652616d84236981bc7",
+        "f0a8e9a8b1433dbf75de0078dddd3145d33b052250613b44ae6c4e72f14745af"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md"
+    },
+    {
+      "id": "Q03",
+      "question": "Which posting-date adjustment options handle a closed or on-hold period for vendor invoices?",
+      "topic": "Vendor invoices",
+      "expected": "The date can move to the system date or the first day of the new open period when its period is closed or on hold.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "facts": [
+        [
+          "system date"
+        ],
+        [
+          "first day"
+        ],
+        [
+          "closed"
+        ],
+        [
+          "on hold"
+        ]
+      ],
+      "evidence_anchor": "Change posting date to first day",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "0c2631e2f42f402b94162eedfbeced9d25bd919fd7115d3d2d78f9b2a4c64c6b"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md"
+    },
+    {
+      "id": "Q04",
+      "question": "Does vendor payment proposal automation automatically post payments?",
+      "topic": "Payments",
+      "expected": "No. It creates payments in the configured journal, which remains unposted; existing approval and validation processes still apply.",
+      "source": "automate-vendor-payment-proposal.md",
+      "type": "answer",
+      "facts": [
+        [
+          "doesn't post",
+          "don't automatically post",
+          "isn't posted",
+          "not post",
+          "unposted"
+        ]
+      ],
+      "evidence_anchor": "don't automatically post the payments",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "79c1ba368d6b35e3f83aba52e358d0e6026c8e0d8a14f763bef3b3a7a851492c"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md"
+    },
+    {
+      "id": "Q05",
+      "question": "A payment proposal runs on Wednesday and must include invoices due on or before Friday. What Number of days adjustment for To date should I use?",
+      "topic": "Payments",
+      "expected": "Use +2, as in the documented Wednesday March 25 to Friday March 27 example.",
+      "source": "automate-vendor-payment-proposal.md",
+      "type": "answer",
+      "facts": [
+        [
+          "2"
+        ],
+        [
+          "friday"
+        ]
+      ],
+      "evidence_anchor": "Friday",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "e46d2daf7cce3fa95f424782afc3b6bc5662c6dc75366ce369742ce859b2eb1f"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/automate-vendor-payment-proposal.md"
+    },
+    {
+      "id": "Q06",
+      "question": "What are the three main components of the scanned vendor invoice automation solution?",
+      "topic": "Automation",
+      "expected": "Data entities for invoice header, lines and attachments; invoice exception processing; side-by-side attachment viewer.",
+      "source": "vendor-invoice-automation.md",
+      "type": "answer",
+      "facts": [
+        [
+          "data entities"
+        ],
+        [
+          "exception processing"
+        ],
+        [
+          "side-by-side"
+        ]
+      ],
+      "evidence_anchor": "Solution components",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "9c2bae5e456df47f69b035a99cd5e13358568b428bde69488cce571f8c0271d4"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md"
+    },
+    {
+      "id": "Q07",
+      "question": "When vendor invoices require workflow review, which button sends an invoice for review instead of posting it?",
+      "topic": "Vendor invoices",
+      "expected": "Submit sends the invoice through workflow; it replaces Post for the review process.",
+      "source": "vendor-invoices-overview.md",
+      "type": "answer",
+      "facts": [
+        [
+          "submit"
+        ],
+        [
+          "post"
+        ],
+        [
+          "workflow"
+        ]
+      ],
+      "evidence_anchor": "Submit",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "1410117a8c7e5fcad4b9322fbb539bd4b0cb662b6dba58a507d5207a6834cc29",
+        "98127d7bb9ceba443c7a57e68c9021841570670e8004919060f24f3d8af1e524",
+        "1b9a7976bc51c2505485ca69a7f9049d90c7402cc56f764571bd4a69b6527755",
+        "551451668f47810ca4df85ada38f1aab47f1ee1b41f116017e33f458e61b6bc4",
+        "1a021cc3d44a8239149b03d09c77723b10fba83b3d39e7b9659bfe34da08e722",
+        "68e16a07b2b8e5284128d3c7749150f6b52a687528729d64214c00b8edddb8da"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoices-overview.md"
+    },
+    {
+      "id": "Q08",
+      "question": "Can I set two documents as the default attachment on one vendor invoice?",
+      "topic": "Automation",
+      "expected": "No. Only one document can be the default attachment; it appears when the invoice opens.",
+      "source": "vendor-invoice-automation.md",
+      "type": "answer",
+      "facts": [
+        [
+          "only one"
+        ],
+        [
+          "default attachment"
+        ]
+      ],
+      "evidence_anchor": "Only one",
+      "origin": "existing development case",
+      "relevant_chunk_ids": [
+        "ed2b5308d61b79c0bc99a2a0cb0743f82994ce6cfa5878c3396989e6edfe5803"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md"
+    },
+    {
+      "id": "Q09",
+      "question": "Which SAP transaction code should I use to reverse a vendor invoice?",
+      "topic": "All topics",
+      "expected": "Abstain: the corpus covers Dynamics 365 Finance, not SAP transaction codes.",
+      "source": null,
+      "type": "abstain",
+      "facts": [],
+      "evidence_anchor": null,
+      "origin": "existing development case",
+      "relevant_chunk_ids": [],
+      "source_url": null
+    },
+    {
+      "id": "Q10",
+      "question": "What was our company's unpaid vendor balance yesterday? Give the exact amount in rupees.",
+      "topic": "All topics",
+      "expected": "Abstain: public product documentation contains no live company balances or transactions.",
+      "source": null,
+      "type": "abstain",
+      "facts": [],
+      "evidence_anchor": null,
+      "origin": "existing development case",
+      "relevant_chunk_ids": [],
+      "source_url": null
+    },
+    {
+      "id": "Q11",
+      "question": "Which date is blank by default when creating a vendor invoice?",
+      "topic": "Vendor invoices",
+      "expected": "The invoice date is blank by default.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "facts": [
+        [
+          "invoice date"
+        ],
+        [
+          "blank"
+        ]
+      ],
+      "evidence_anchor": "This field is blank by default",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "577ea1f0bb440d3f095c291dafee6fc9b04aa9f1ab740a07312877dbd3c5460e"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md"
+    },
+    {
+      "id": "Q12",
+      "question": "What is the default exchange rate date setting for vendor invoices?",
+      "topic": "Vendor invoices",
+      "expected": "Posting date is the default value.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "facts": [
+        [
+          "posting date"
+        ],
+        [
+          "default"
+        ]
+      ],
+      "evidence_anchor": "Posting date is the default value",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "31fdc5a5db37d438de7c36cbe8aa1fb23cdaddbb91cacd652616d84236981bc7"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md"
+    },
+    {
+      "id": "Q13",
+      "question": "Which date does Reject duplicates within fiscal year use to check duplicate invoices?",
+      "topic": "Vendor invoices",
+      "expected": "The system uses the posting date.",
+      "source": "vendor-invoice-dates.md",
+      "type": "answer",
+      "facts": [
+        [
+          "posting date"
+        ],
+        [
+          "duplicate"
+        ]
+      ],
+      "evidence_anchor": "Reject duplicates within fiscal year",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "f0a8e9a8b1433dbf75de0078dddd3145d33b052250613b44ae6c4e72f14745af"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-dates.md"
+    },
+    {
+      "id": "Q14",
+      "question": "In which payment status can a vendor payment be deleted?",
+      "topic": "Payments",
+      "expected": "Only Created status permits deletion.",
+      "source": "reverse-vendor-payment.md",
+      "type": "answer",
+      "facts": [
+        [
+          "created"
+        ],
+        [
+          "delete"
+        ]
+      ],
+      "evidence_anchor": "You can delete a payment only",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "15e84490668aad39de64d24fea07427bd27b2be18299ac575b421225f542931e"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/reverse-vendor-payment.md"
+    },
+    {
+      "id": "Q15",
+      "question": "What status does a check receive after posting a check reversal?",
+      "topic": "Payments",
+      "expected": "The check status updates to Cancellation.",
+      "source": "reverse-vendor-payment.md",
+      "type": "answer",
+      "facts": [
+        [
+          "cancellation"
+        ],
+        [
+          "check status"
+        ]
+      ],
+      "evidence_anchor": "The check status updates",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "368d1db64a2ac38f25f813380c7738ba9df4f22f504093a1f65b05fc54754c11"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/reverse-vendor-payment.md"
+    },
+    {
+      "id": "Q16",
+      "question": "How do I pause automated processing before editing a submitted vendor invoice?",
+      "topic": "Vendor invoices",
+      "expected": "Set Include in Automated processing to No.",
+      "source": "view-automated-vendor-invoice.md",
+      "type": "answer",
+      "facts": [
+        [
+          "include in automated processing"
+        ],
+        [
+          "no"
+        ],
+        [
+          "pause"
+        ]
+      ],
+      "evidence_anchor": "Before you can edit an invoice",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "e065fb267640d46db17a0361b7e86a651f249f0898bc3f44a8220b916e1c6d52"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/view-automated-vendor-invoice.md"
+    },
+    {
+      "id": "Q17",
+      "question": "What does Workflow complete mean in vendor invoice automation results?",
+      "topic": "Vendor invoices",
+      "expected": "The workflow process is complete for the imported invoice.",
+      "source": "view-automated-vendor-invoice.md",
+      "type": "answer",
+      "facts": [
+        [
+          "workflow process is complete"
+        ],
+        [
+          "imported invoice"
+        ]
+      ],
+      "evidence_anchor": "Workflow complete",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "d935c651cad04c12c3aa10a346504206cf91dd3271993839632e2cb5cc63a1d6"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/view-automated-vendor-invoice.md"
+    },
+    {
+      "id": "Q18",
+      "question": "What determines the company to which an imported vendor invoice belongs?",
+      "topic": "Automation",
+      "expected": "The company where the import job is scheduled determines the invoice company.",
+      "source": "vendor-invoice-automation.md",
+      "type": "answer",
+      "facts": [
+        [
+          "company"
+        ],
+        [
+          "job"
+        ],
+        [
+          "data management"
+        ]
+      ],
+      "evidence_anchor": "company of the job determines",
+      "origin": "new regression case",
+      "relevant_chunk_ids": [
+        "144277683cdb4fa0618791536dc4cc12e8b85b690a239f0b6337bdca86a845c3"
+      ],
+      "source_url": "https://github.com/MicrosoftDocs/dynamics-365-unified-operations-public/blob/cb977385a7ab71c306533725527086bc30d9f548/articles/finance/accounts-payable/vendor-invoice-automation.md"
+    },
+    {
+      "id": "Q19",
+      "question": "How do I configure Oracle vendor invoice approvals?",
+      "topic": "All topics",
+      "expected": "Decline because Oracle is outside the library.",
+      "source": null,
+      "type": "abstain",
+      "facts": [],
+      "evidence_anchor": null,
+      "origin": "new regression case",
+      "relevant_chunk_ids": [],
+      "source_url": null
+    },
+    {
+      "id": "Q20",
+      "question": "Give the exact total amount of our unpaid vendor invoices today.",
+      "topic": "All topics",
+      "expected": "Decline because public documentation has no live financial records.",
+      "source": null,
+      "type": "abstain",
+      "facts": [],
+      "evidence_anchor": null,
+      "origin": "new regression case",
+      "relevant_chunk_ids": [],
+      "source_url": null
+    }
+  ],
+  "curation_note": "Checks require facts asked by the question: Q04 requires non-posting behavior, not optional journal details; Q01 accepts singular or plural product receipt wording."
+}

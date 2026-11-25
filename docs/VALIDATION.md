@@ -1,5 +1,7 @@
 # Ten question pipeline validation
 
+This records the original ten-case validation. The newer 20-case suite and incremental update checks are described in [FEATURES.md](FEATURES.md).
+
 **Outcome:** all 10 curated cases met the reviewed requirements; all 24 targeted regression tests passed. Eight questions returned source-backed answers, and two unsupported requests were declined.
 
 Checks used the live Gradio API with hybrid retrieval, Qwen reranking, 512D embeddings, and the downloaded Unsloth Qwen3 1.7B model. The corpus contained 21 public Microsoft documents and 247 indexed chunks. Each case used its saved topic filter.

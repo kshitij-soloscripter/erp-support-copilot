@@ -1,5 +1,7 @@
 # ERP Support Copilot code walkthrough
 
+For the golden evaluation and incremental indexing additions, see [FEATURES.md](FEATURES.md).
+
 This guide explains the application from a beginner's perspective. Read the flow first, then the file descriptions. Each function gets a short explanation; library internals are outside this guide.
 
 ## 1 The whole application
@@ -101,7 +103,7 @@ Document and question vectors must use the same embedding model and dimensions. 
 | `SearchStore.client()` | Lazily opens persistent local Qdrant or connects to the configured remote server. |
 | `SearchStore.chunks_path()` | Returns the dimension-specific JSON file used to rebuild the in-memory keyword index. |
 | `SearchStore.load()` | Checks the saved embedding model, collection existence, and point count; loads chunks and constructs BM25. |
-| `SearchStore.build(progress)` | Rebuilds the selected collection, embeds chunks, uploads vectors and payloads, atomically saves the chunk file, then loads BM25. |
+| `SearchStore.build(progress)` | Delegates to incremental synchronization: reuses existing vectors, embeds missing chunks, deletes removed points, updates metadata, and refreshes BM25. |
 | `SearchStore.expand_context(ranked, limit)` | Groups candidates by document and heading, adds nearby chunks, and limits sections to 2,400 characters and total context to 6,000 characters. |
 | Nested `section_key(doc)` | Creates the document, section, and subsection grouping key. |
 | `SearchStore.search(query, mode, topic)` | Runs dense search, keyword search, or both. Applies the topic filter to both paths, fuses duplicate IDs with RRF, and returns up to eight candidates by default. |
@@ -173,11 +175,11 @@ Validation checks output structure. Qwen selects IDs rather than writing the dis
 
 | Function | What happens |
 |---|---|
-| `create_app()` | Creates one shared `Copilot` and builds the Ask, Library, and About tabs. Returns the Gradio application. |
+| `create_app()` | Creates one shared `Copilot` and builds the Ask, Library, Document updates, Evaluation, and About tabs. Returns the Gradio application. |
 | Nested `library_status()` | Reads the manifest and displays document count, dimensions, and answer-model information. |
 | Nested `ask(...)` | Calls the service and formats chat, evidence, rankings, and timing. Labels related sources when no answer was established; logs failures. |
 | Nested `download(progress)` | Downloads documents while holding the service lock; updates the setup status. |
-| Nested `build(progress)` | Builds the knowledge index under the same lock. |
+| Nested `build(progress)` | Synchronizes changed chunks under the same lock. |
 | Nested `model_download()` | Downloads answer-model weights and returns a status message. |
 | Nested `model_start()` | Starts the local generation server under the service lock. |
 | Clear-button lambda | Returns empty chat, evidence, timing, rankings, and input values. |

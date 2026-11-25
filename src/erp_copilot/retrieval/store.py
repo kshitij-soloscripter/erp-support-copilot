@@ -1,5 +1,6 @@
 """Persistent Qdrant vectors and a BM25 index over exactly the same chunks."""
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -38,6 +39,7 @@ class SearchStore:
         self._client = None
         self.documents = []
         self.bm25 = None
+        self.manifest_hash = None
 
     @property
     def client(self):
@@ -59,6 +61,8 @@ class SearchStore:
     def load(self):
         if not self.chunks_path.exists():
             raise RuntimeError("Build the knowledge index first in the Library tab.")
+        if self.chunks_path.with_suffix(".pending").exists():
+            raise RuntimeError("An index update was interrupted; synchronize the index first.")
         artifact = json.loads(self.chunks_path.read_text())
         if artifact["embedding_model"] != self.settings.embedding_model:
             raise RuntimeError("The embedding model changed; rebuild the index.")
@@ -68,43 +72,101 @@ class SearchStore:
             artifact["chunks"]
         ):
             raise RuntimeError("The index is incomplete; rebuild it before searching.")
+        manifest_bytes = (self.settings.data_dir / "source-manifest.json").read_bytes()
+        sources = {d["file"]: d["sha256"] for d in json.loads(manifest_bytes)["documents"]}
+        indexed = {d["metadata"]["file"]: d["metadata"]["sha256"] for d in artifact["chunks"]}
+        if sources != indexed:
+            raise RuntimeError("Sources changed; synchronize the knowledge index first.")
+        self.manifest_hash = hashlib.sha256(manifest_bytes).hexdigest()
         self.documents = [Document(**d) for d in artifact["chunks"]]
         self.bm25 = BM25Okapi([tokenize(d.page_content) for d in self.documents])
 
     def build(self, progress=None) -> int:
+        """Compatibility entry point: builds once, then updates incrementally."""
+        return self.sync(progress)["total"]
+
+    def sync(self, progress=None) -> dict:
+        """Embed missing content only; metadata edits never regenerate vectors."""
         if progress:
-            progress(0, desc="Loading documentation and Qwen embedding model…")
+            progress(0, desc="Comparing chunk hashes…")
         documents = load_chunks()
         if not documents:
             raise RuntimeError("No usable chunks. Download documentation first.")
+        self.documents, self.bm25 = [], None
         name = self.settings.collection_name
+        previous = json.loads(self.chunks_path.read_text()) if self.chunks_path.exists() else {}
+        if previous and (
+            previous["embedding_model"] != self.settings.embedding_model
+            or previous["dimensions"] != self.settings.embedding_dimensions
+        ):
+            raise RuntimeError(
+                "Embedding configuration changed; use a new collection or restore it."
+            )
+        old = {d["metadata"]["chunk_id"]: d for d in previous.get("chunks", [])}
+        current = {d.metadata["chunk_id"]: d for d in documents}
+        if not self.client.collection_exists(name):
+            self.client.create_collection(
+                name,
+                vectors_config=models.VectorParams(
+                    size=self.settings.embedding_dimensions, distance=models.Distance.COSINE
+                ),
+            )
+        config = self.client.get_collection(name).config.params.vectors
+        if config.size != self.settings.embedding_dimensions:
+            raise RuntimeError("Collection dimensions do not match the embedding configuration.")
+        # Scan IDs to recover even after a partially completed upsert/delete operation.
+        actual, offset = set(), None
+        while True:
+            points, offset = self.client.scroll(
+                name, limit=256, offset=offset, with_payload=False, with_vectors=False
+            )
+            actual.update(str(p.id) for p in points)
+            if offset is None:
+                break
+        ids = {key: str(uuid5(NAMESPACE_URL, key)) for key in current}
+        added = [d for key, d in current.items() if ids[key] not in actual]
+        deleted = actual - set(ids.values())
+        metadata = [
+            d
+            for key, d in current.items()
+            if ids[key] in actual and old.get(key, {}).get("metadata") != d.metadata
+        ]
         self.chunks_path.parent.mkdir(parents=True, exist_ok=True)
-        self.chunks_path.unlink(missing_ok=True)
-        if self.client.collection_exists(name):
-            self.client.delete_collection(name)
-        self.client.create_collection(
-            name,
-            vectors_config=models.VectorParams(
-                size=self.settings.embedding_dimensions, distance=models.Distance.COSINE
-            ),
-        )
-        for start in range(0, len(documents), 8):
-            batch = documents[start : start + 8]
+        pending = self.chunks_path.with_suffix(".pending")
+        pending.write_text("Index update in progress; retry synchronization if interrupted.")
+        for start in range(0, len(added), 8):
+            batch = added[start : start + 8]
             vectors = self.embeddings.embed_documents([d.page_content for d in batch])
-            points = [
-                models.PointStruct(
-                    id=str(uuid5(NAMESPACE_URL, d.metadata["chunk_id"])),
-                    vector=v,
-                    payload={"page_content": d.page_content, "metadata": d.metadata},
-                )
-                for d, v in zip(batch, vectors)
-            ]
-            self.client.upsert(name, points=points, wait=True)
+            if len(vectors) != len(batch):
+                raise RuntimeError("Embedding batch size mismatch.")
+            self.client.upsert(
+                name,
+                points=[
+                    models.PointStruct(
+                        id=ids[d.metadata["chunk_id"]],
+                        vector=v,
+                        payload={"page_content": d.page_content, "metadata": d.metadata},
+                    )
+                    for d, v in zip(batch, vectors)
+                ],
+                wait=True,
+            )
             if progress:
                 progress(
-                    min((start + len(batch)) / len(documents), 1),
-                    desc=f"Embedding {start + len(batch)}/{len(documents)} chunks",
+                    (start + len(batch)) / len(added),
+                    desc=f"Embedding {start + len(batch)}/{len(added)} changed chunks",
                 )
+        for doc in metadata:
+            self.client.set_payload(
+                name,
+                payload={"metadata": doc.metadata},
+                points=[ids[doc.metadata["chunk_id"]]],
+                wait=True,
+            )
+        if deleted:
+            self.client.delete(
+                name, points_selector=models.PointIdsList(points=sorted(deleted)), wait=True
+            )
         artifact = {
             "embedding_model": self.settings.embedding_model,
             "dimensions": self.settings.embedding_dimensions,
@@ -113,8 +175,17 @@ class SearchStore:
         temporary = self.chunks_path.with_suffix(".tmp")
         temporary.write_text(json.dumps(artifact))
         temporary.replace(self.chunks_path)
+        if self.client.count(name, exact=True).count != len(documents):
+            raise RuntimeError("Index update incomplete; retry synchronization.")
+        pending.unlink(missing_ok=True)
         self.load()
-        return len(documents)
+        return {
+            "total": len(documents),
+            "embedded": len(added),
+            "deleted": len(deleted),
+            "reused": len(documents) - len(added),
+            "metadata_updated": len(metadata),
+        }
 
     def expand_context(self, ranked: list[Document], limit: int) -> list[Document]:
         """Return distinct, bounded parent sections instead of fragmented lists."""
@@ -166,6 +237,16 @@ class SearchStore:
         return contexts
 
     def search(self, query: str, mode: str = "Hybrid", topic: str = "All topics") -> list[Document]:
+        if self.chunks_path.with_suffix(".pending").exists():
+            raise RuntimeError("Index update incomplete; synchronize the library first.")
+        if (
+            self.documents
+            and self.manifest_hash
+            != hashlib.sha256(
+                (self.settings.data_dir / "source-manifest.json").read_bytes()
+            ).hexdigest()
+        ):
+            raise RuntimeError("Sources changed; synchronize the knowledge index first.")
         if not self.documents:
             self.load()
         rankings = []

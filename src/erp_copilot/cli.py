@@ -8,7 +8,8 @@ from erp_copilot.config.settings import get_settings
 def main():
     parser = argparse.ArgumentParser(description="ERP Support Copilot")
     parser.add_argument(
-        "command", choices=["app", "download", "index", "download-model", "serve-model", "ask"]
+        "command",
+        choices=["app", "download", "index", "download-model", "serve-model", "ask", "evaluate"],
     )
     parser.add_argument("question", nargs="?")
     args = parser.parse_args()
@@ -39,6 +40,15 @@ def main():
             import threading
 
             threading.Event().wait()
+    elif args.command == "evaluate":
+        from erp_copilot.evaluation.suite import run_suite
+        from erp_copilot.pipeline import Copilot
+
+        report, path = run_suite(Copilot())
+        print(report["summary"])
+        print(path)
+        if report["summary"]["passed"] != 20:
+            raise SystemExit(1)
     elif args.command == "ask":
         if not args.question:
             parser.error("ask requires a quoted question")

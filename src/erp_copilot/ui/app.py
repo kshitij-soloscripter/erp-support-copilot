@@ -7,9 +7,11 @@ import logging
 import gradio as gr
 
 from erp_copilot.config.settings import get_settings
+from erp_copilot.evaluation.suite import load_golden, run_suite
 from erp_copilot.generation.policy import ABSTENTION
 from erp_copilot.generation.runtime import download_model, start
 from erp_copilot.ingestion.download import download_corpus
+from erp_copilot.ingestion.update import ingest_revision
 from erp_copilot.pipeline import Copilot
 
 LOGGER = logging.getLogger(__name__)
@@ -37,7 +39,7 @@ def create_app() -> gr.Blocks:
             sources = []
             for i, doc in enumerate(result["context"], 1):
                 sources.append(
-                    f"### [{i}] {html.escape(doc.metadata['title'])}\n[Open source]({doc.metadata['source']}) · {html.escape(doc.metadata.get('section', 'Accounts payable'))}\n\n> "
+                    f"### [{i}] {html.escape(doc.metadata['title'])}\n{html.escape(doc.metadata.get('revision_note', ''))}\n[Open source]({doc.metadata['source']}) · {html.escape(doc.metadata.get('section', 'Accounts payable'))}\n\n> "
                     + html.escape(doc.page_content).replace("\n", "\n> ")
                 )
             rows = [
@@ -77,8 +79,55 @@ def create_app() -> gr.Blocks:
 
     def build(progress=gr.Progress()):  # noqa: B008 - Gradio injects progress via this default
         with service.lock:
-            count = service.store.build(progress)
-        return f"Indexed {count} chunks. Your library is ready.", library_status()
+            stats = service.store.sync(progress)
+        return (
+            (
+                f"{stats['total']} chunks · {stats['embedded']} embedded · {stats['reused']} reused · "
+                f"{stats['deleted']} deleted · {stats['metadata_updated']} metadata updates"
+            ),
+            library_status(),
+        )
+
+    def revise(filename, upload, progress=gr.Progress()):  # noqa: B008
+        if not upload:
+            raise gr.Error("Upload the revised Markdown document first.")
+        with service.lock:
+            revision = ingest_revision(filename, upload)
+            stats = service.store.sync(progress)
+        return {**revision, **stats}, library_status()
+
+    def evaluate(eval_mode, eval_rerank, progress=gr.Progress()):  # noqa: B008
+        try:
+            report, path = run_suite(service, eval_mode, eval_rerank, progress)
+        except (ValueError, RuntimeError) as exc:
+            raise gr.Error(str(exc)) from exc
+        rows = [
+            [
+                r["id"],
+                r["question"],
+                r["metrics"]["pass"],
+                r["metrics"].get("fact_coverage"),
+                r["metrics"].get("mrr_at_k"),
+                r["seconds"],
+                r.get("answer", r.get("error")),
+            ]
+            for r in report["results"]
+        ]
+        return report["summary"], rows, path
+
+    def document_choices():
+        path = settings.data_dir / "source-manifest.json"
+        return (
+            [d["file"] for d in json.loads(path.read_text())["documents"]] if path.exists() else []
+        )
+
+    def refresh_documents():
+        return gr.Dropdown(choices=document_choices(), value=None)
+
+    def source_file(filename):
+        if filename not in document_choices():
+            return None
+        return str(settings.data_dir / "raw" / filename)
 
     def model_download():
         with service.lock:
@@ -161,7 +210,7 @@ def create_app() -> gr.Blocks:
             setup_status = gr.Markdown()
             with gr.Row():
                 fetch = gr.Button("1 · Download public documents")
-                index = gr.Button("2 · Build knowledge index")
+                index = gr.Button("2 · Synchronize knowledge index")
             with gr.Row():
                 fetch_model = gr.Button("3 · Download answer model")
                 launch_model = gr.Button("4 · Start answer model")
@@ -171,6 +220,67 @@ def create_app() -> gr.Blocks:
             launch_model.click(model_start, outputs=setup_status, concurrency_id="local-models")
             gr.Markdown(
                 "**Source:** MicrosoftDocs Dynamics 365 public documentation, Accounts payable.\n\nDocumentation: CC BY 4.0. Microsoft is the original author; preprocessing and chunking are applied locally. Repository snapshots and original license notices are saved during download."
+            )
+        with gr.Tab("Document updates"):
+            gr.Markdown(
+                "## Ingest a revised document\nSelect an existing document and upload its revised UTF-8 Markdown. "
+                "Unchanged chunk vectors are reused; changed or added chunks are embedded and removed chunks are deleted. "
+                "Edits can shift neighboring chunk boundaries. BM25 is refreshed from the complete chunk list. "
+                "Use public, non-sensitive data. Old source bytes are archived locally."
+            )
+            revision_document = gr.Dropdown(document_choices(), label="Existing document")
+            refresh = gr.Button("Refresh document list")
+            original_file = gr.File(label="Download current source", interactive=False)
+            revision_file = gr.File(label="Revised Markdown", file_types=[".md"], type="filepath")
+            revise_button = gr.Button(
+                "Ingest revision and update changed chunks", variant="primary"
+            )
+            revision_stats = gr.JSON(label="Update result")
+            refresh.click(
+                refresh_documents, outputs=revision_document, api_name="refresh_documents"
+            )
+            revision_document.change(
+                source_file, revision_document, original_file, api_name="source_file"
+            )
+            revise_button.click(
+                revise,
+                [revision_document, revision_file],
+                [revision_stats, status],
+                concurrency_id="local-models",
+                api_name="ingest_revision",
+            )
+        with gr.Tab("Evaluation"):
+            gr.Markdown(
+                "## 20-question golden regression set\n16 documentation questions and 4 scope checks. "
+                "Includes the 10 earlier development cases; this is not a held-out accuracy benchmark. "
+                "Checks expected facts, retrieval Recall/MRR/nDCG at the returned candidate count, "
+                "citation IDs, exact source quotes, and abstention. Fact matching does not prove correctness. "
+                "Source-version drift blocks evaluation until the golden set is reviewed. Full runs can take several minutes."
+            )
+            gold = load_golden()
+            gr.Dataframe(
+                value=[[c["id"], c["question"], c["expected"], c["source"]] for c in gold["cases"]],
+                headers=["ID", "Question", "Expected answer", "Reference document"],
+                interactive=False,
+            )
+            with gr.Row():
+                eval_mode = gr.Radio(
+                    ["Hybrid", "Dense", "Keyword"], value="Hybrid", label="Evaluation retrieval"
+                )
+                eval_rerank = gr.Checkbox(value=True, label="Evaluation reranking")
+            run_evaluation = gr.Button("Run all 20 questions", variant="primary")
+            eval_summary = gr.JSON(label="Evaluation metrics")
+            eval_results = gr.Dataframe(
+                headers=["ID", "Question", "Pass", "Fact coverage", "MRR", "Seconds", "Answer"],
+                interactive=False,
+            )
+            eval_download = gr.File(label="Download full JSON report", interactive=False)
+            run_evaluation.click(
+                evaluate,
+                [eval_mode, eval_rerank],
+                [eval_summary, eval_results, eval_download],
+                concurrency_id="local-models",
+                api_name="evaluate",
             )
         with gr.Tab("About"):
             gr.Markdown(

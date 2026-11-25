@@ -109,3 +109,41 @@ python -m compileall -q src app.py scripts
 ```
 
 The application code is MIT licensed. Model weights, runtime binaries, and documentation retain their respective upstream licenses. This project is independent and is not endorsed by Microsoft, Qwen, or Unsloth.
+
+### Golden evaluation
+
+The **Evaluation** tab runs 20 curated questions through the same app pipeline:
+16 documentation questions and 4 scope checks. It shows per-question results and
+exports a JSON report. Choose Hybrid, Dense, or Keyword retrieval and toggle
+reranking for comparisons. CLI: `.venv/bin/erp-copilot evaluate` (close the app first
+when using local Qdrant).
+
+The dataset is `evaluation/golden.json`, with expected answers, required fact
+alternatives, relevant chunk IDs, source links, and source hashes. The original
+10 development cases remain in `evaluation/questions.json` as historical checks.
+This is a regression set, **not a held-out accuracy benchmark**. Metrics cover
+reference-fact coverage, retrieval Recall/MRR/nDCG at the returned candidate count,
+valid citation IDs, exact quote grounding, and abstention. Word matching cannot
+judge full factual correctness. Review answers against their evidence. Source
+version changes block evaluation until the reference answers and evidence labels
+have been reviewed and rebaselined.
+
+### Incremental document updates
+
+In **Document updates**, select a document, download its current Markdown, then
+upload a revised version. The app uses content hashes to reuse unchanged vectors,
+embed new/changed chunks, remove deleted chunks, and update provenance payloads.
+The existing **Synchronize knowledge index** button uses this same incremental
+path after a public-document refresh. It does not recreate the collection.
+
+Documents are parsed again to find changes. Edits can change neighboring chunk
+boundaries, so multiple affected chunks may need new embeddings. BM25 is rebuilt
+locally from the current chunk list. Old document bytes and metadata are archived
+under ignored `data/versions/`; evaluation reports stay in `data/evaluations/`.
+Uploaded revisions clearly mark original public links as historical references.
+Interrupted vector updates block queries until synchronization is retried; a retry
+reuses content vectors already written. This local app serializes ingestion,
+search, and evaluation. It is not a multi-process transactional ingestion service.
+
+Implementation details and verified scenarios: [feature guide](docs/FEATURES.md).
+Saved live-run answers and final grades: [20-case report](evaluation/golden-results.json).
